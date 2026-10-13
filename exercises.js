@@ -580,47 +580,6 @@ const exerciseGuide = {
     ]
   }
 };
-// Schematic illustrations: head, trunk, arms and legs in two movement positions.
-const exercisePoses = {
- press: [[35,58,50,65,88,65,50,40,78,40,92,85,116,85],[35,58,50,65,88,65,50,18,78,18,92,85,116,85]],
- incline: [[40,40,52,50,83,72,65,30,90,35,92,85,115,85],[40,40,52,50,83,72,45,10,72,10,92,85,115,85]],
- overhead: [[70,22,70,35,70,65,45,30,95,30,50,100,90,100],[70,22,70,35,70,65,50,5,90,5,50,100,90,100]],
- lateral: [[70,22,70,35,70,65,48,63,92,63,50,100,90,100],[70,22,70,35,70,65,25,35,115,35,50,100,90,100]],
- pushdown: [[70,22,70,35,70,65,92,42,100,42,50,100,85,100],[70,22,70,35,70,65,82,72,90,72,50,100,85,100]],
- pulldown: [[70,25,70,38,70,70,40,5,100,5,100,94,110,94],[70,25,70,38,70,70,42,40,98,40,100,94,110,94]],
- row: [[48,28,50,40,50,70,105,40,112,40,95,95,115,95],[48,28,50,40,50,70,65,55,72,55,95,95,115,95]],
- face: [[70,22,70,35,70,65,112,35,120,35,50,100,90,100],[70,22,70,35,70,65,65,20,90,20,50,100,90,100]],
- curl: [[70,22,70,35,70,65,48,70,92,70,50,100,90,100],[70,22,70,35,70,65,55,30,85,30,50,100,90,100]],
- squat: [[70,22,70,35,70,65,60,40,80,40,50,100,90,100],[65,45,68,58,85,78,55,62,75,62,50,100,100,100]],
- legpress: [[30,55,40,65,62,80,50,70,55,75,110,30,118,30],[30,55,40,65,62,80,50,70,55,75,92,60,100,60]],
- hinge: [[70,22,70,35,70,65,48,70,92,70,50,100,90,100],[110,45,100,55,65,65,100,85,110,85,50,100,90,100]],
- legcurl: [[35,25,35,38,40,70,55,58,60,58,110,80,115,85],[35,25,35,38,40,70,55,58,60,58,85,100,90,105]],
- plank: [[30,55,42,60,85,65,25,88,35,88,130,78,135,78],[30,55,42,60,85,65,25,88,35,88,130,78,135,78]],
- fly: [[30,60,45,65,85,65,18,45,110,45,100,85,120,85],[30,60,45,65,85,65,55,20,65,20,100,85,120,85]],
- extension: [[70,22,70,35,70,65,55,30,65,30,50,100,90,100],[70,22,70,35,70,65,60,5,75,5,50,100,90,100]],
- rear: [[110,45,100,55,65,65,100,90,110,90,50,100,90,100],[110,45,100,55,65,65,60,35,130,35,50,100,90,100]],
- lunge: [[70,22,70,35,70,65,48,65,92,65,50,100,110,100],[70,40,70,53,70,80,48,82,92,82,40,105,120,105]],
- legextension: [[35,25,35,38,40,70,55,58,60,58,85,100,90,105],[35,25,35,38,40,70,55,58,60,58,110,70,115,75]],
- calf: [[70,22,70,35,70,65,48,65,92,65,50,100,90,100],[70,12,70,25,70,55,48,55,92,55,50,90,90,90]],
- crunch: [[25,80,40,85,75,85,38,68,50,68,110,100,120,100],[30,58,45,70,75,85,38,50,50,50,110,100,120,100]]
-};
-function exerciseIllustration(guide, name) {
- const poses = exercisePoses[guide.pose];
- const frame = (a, i) => {
-  const [hx,hy,sx,sy,px,py,lx,ly,rx,ry,lfx,lfy,rfx,rfy]=a;
-  const seated=['row','pulldown','legextension','legcurl','legpress','chestmachine'].includes(guide.pose);
-  const bench=['press','incline','fly'].includes(guide.pose);
-  return `<g transform="translate(${i*170+10},28)">
-   <path d="M5 108H145" stroke="#405975" stroke-width="2"/>
-   ${bench?'<path d="M25 75H90M40 75V105M85 75V105" stroke="#6c829b" stroke-width="5"/>':''}
-   ${seated?'<path d="M20 75H65M30 75V105" stroke="#6c829b" stroke-width="5"/>':''}
-   <circle cx="${hx}" cy="${hy}" r="9" fill="#9bd0ff"/>
-   <path d="M${sx} ${sy}L${px} ${py}M${sx} ${sy}L${lx} ${ly}M${sx} ${sy}L${rx} ${ry}M${px} ${py}L${(px+lfx)/2+8} ${(py+lfy)/2-5}L${lfx} ${lfy}M${px} ${py}L${(px+rfx)/2-8} ${(py+rfy)/2-5}L${rfx} ${rfy}" fill="none" stroke="#58a7ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-   ${['plank','pushup','bridge','deadbug','crunch','squat','lunge','calf'].includes(guide.pose)?'':`<path d="M${lx-6} ${ly}H${lx+6}M${rx-6} ${ry}H${rx+6}" stroke="#28c999" stroke-width="7" stroke-linecap="round"/>`}
-   <text x="70" y="132" text-anchor="middle" fill="#b4c6d9" font-size="12">${guide.pose==='plank'?'Mantén la postura':i?'Posición 2':'Posición 1'}</text></g>`;
- };
- return `<svg viewBox="0 0 350 170" role="img" aria-label="${esc(name)}: esquema de postura y movimiento"><title>${esc(name)}</title>${frame(poses[0],0)}${frame(poses[1],1)}<path d="M164 75h20m-6-6 6 6-6 6" fill="none" stroke="#28c999" stroke-width="3"/></svg>`;
-}
 const variantTechnique = {
  'Press con mancuernas':'Túmbate con pies apoyados y mancuernas junto al pecho.|Empuja sobre el pecho con muñecas rectas.|Baja despacio sin abrir demasiado los codos.',
  'Flexiones inclinadas':'Apoya las manos en un banco firme y aleja los pies, cuerpo alineado.|Dobla los codos para acercar el pecho al banco.|Empuja sin hundir la cadera.',
@@ -682,18 +641,3 @@ for (const original of Object.values(exerciseGuide)) {
 }
 exerciseGuide['Puente de glúteos'].muscles='Glúteo mayor e isquiotibiales';
 exerciseGuide['Elevación talones sentado'].muscles='Sóleo y gastrocnemio';
-exercisePoses.pushup=[[25,52,40,58,85,65,35,98,45,98,130,95,138,95],[25,78,40,84,85,90,35,100,45,100,130,100,138,100]];
-exercisePoses.bridge=[[25,88,40,90,75,92,45,103,65,103,120,103,130,103],[25,88,40,85,75,62,45,103,65,103,120,103,130,103]];
-exercisePoses.deadbug=[[25,85,40,85,75,85,40,35,50,35,105,45,115,45],[25,85,40,85,75,85,10,65,50,35,130,95,115,45]];
-exercisePoses.standingfly=[[70,22,70,35,70,65,20,35,120,35,50,100,90,100],[70,22,70,35,70,65,68,40,78,40,50,100,90,100]];
-exercisePoses.chestmachine=[[45,25,45,38,45,70,60,35,70,35,85,100,95,100],[45,25,45,38,45,70,100,38,110,38,85,100,95,100]];
-const variantPoseOverrides={
- 'Flexiones inclinadas':'pushup','Flexiones con manos juntas':'pushup',
- 'Press de pecho en máquina':'chestmachine','Press inclinado en máquina':'chestmachine',
- 'Aperturas en polea':'standingfly','Aperturas en máquina':'standingfly','Aperturas con banda':'standingfly',
- 'Aperturas inversas en máquina':'standingfly','Aperturas inversas con banda':'standingfly',
- 'Puente de glúteos':'bridge','Dead bug':'deadbug','Curl femoral con toalla deslizante':'bridge','Curl femoral con pelota':'bridge',
- 'Extensión tríceps con banda':'pushdown','Extensión tríceps sobre cabeza':'extension',
- 'Plancha con rodillas apoyadas':'plank','Plancha inclinada en banco':'plank'
-};
-for(const [name,pose] of Object.entries(variantPoseOverrides))exerciseGuide[name].pose=pose;
