@@ -66,3 +66,11 @@ Cada día de Rutinas agrupa sus ejercicios por el músculo de énfasis principal
 Una variante puede cambiar de sector (por ejemplo, peso muerto rumano → puente de glúteos). El índice original del ejercicio se conserva al agrupar: `done`, `loads`, `reps` y `substitutions` siguen usando las mismas claves de semana, día y posición. No se duplican ejercicios ni se migra ningún registro. Domingo sigue siendo descanso.
 
 Publicar también `muscle-sectors.js`. Prueba: `node tests/sectors-smoke.cjs`; verifica las 30 posiciones y las 90 alternativas, todos los sectores, cambios de sector sin perder registros y pantallas móviles.
+
+## Combinaciones y cardio
+
+Las tarjetas de ejercicios muestran foto, series, zona y controles de registro en un diseño compacto. «Combinación sugerida» propone movimientos complementarios dentro de las variantes ya disponibles para cada posición. Aplicarla es una acción explícita; conserva cargas, repeticiones y marcas de completado como referencia y avisa de revisar la carga al cambiar de movimiento. Las propuestas no sustituyen automáticamente la selección actual.
+
+Al final de cada día se puede elegir caminar, correr o bicicleta, anotar minutos y marcar completado. `cardio` guarda cada actividad de forma independiente por semana y día, sin mezclarse con los registros de fuerza. Se incluye en los respaldos. En días de piernas se propone empezar más suave; domingo mantiene el descanso y cualquier actividad es opcional.
+
+Publicar también `workout-finish.js`. Prueba: `node tests/workout-finish-smoke.cjs`; cubre combinaciones válidas, registros de fuerza intactos, cardio por actividad/semana/día, exportación/restauración y móvil.
