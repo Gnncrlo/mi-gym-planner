@@ -54,3 +54,7 @@ La navegación reemplaza Hábitos por Comidas. El diario permite describir ingre
 `foodLog` se añade a `mgp-v2` y se incluye en exportación/restauración. Los datos anteriores de alimentos (`meals`), agua y sueño se conservan. Agua y descanso está en Más; las recomendaciones de Inicio enlazan allí cuando corresponde. El identificador anterior `habitos` sigue funcionando como alias de Comidas. Si no hay espacio para guardar una comida, se conserva el diario anterior y se muestra un error.
 
 Publicar también `nutrition.js`. Prueba: `node tests/foods-smoke.cjs`, con los mismos requisitos que las otras pruebas. Incluye diario, edición, negaciones en ingredientes, hambre/saciedad, preservación de datos anteriores, respaldos, HTML escapado y fallo de almacenamiento.
+
+## Configuración
+
+Más presenta perfil y grupos de ajustes con filas táctiles, horarios desplegables, preferencia de recordatorios y acciones de respaldo. Los horarios y preferencias mantienen sus campos originales. La preferencia de recordatorios no activa notificaciones automáticas. Prueba de ajustes y respaldos: `node tests/settings-smoke.cjs`.
