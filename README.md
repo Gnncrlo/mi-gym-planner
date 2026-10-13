@@ -96,3 +96,16 @@ Reabrir mediante confirmación habilita la edición y conserva el resumen anteri
 La bienvenida usa una entrada coordinada de opacidad/desplazamiento y una salida de opacidad hacia la app ya renderizada. Se han quitado las animaciones separadas de escala/rotación del logo y el aro. Entrar y Escape usan la misma salida; movimiento reducido sigue sin animaciones. El cierre del diálogo conserva un temporizador de seguridad y restaura el foco.
 
 La propuesta de Push B incluye aperturas de polea alta hacia abajo para variar el énfasis esternocostal respecto al press inclinado. Pull B propone curl con barra y predicador para variar la posición del brazo respecto al curl de pie y martillo del día A. Las instrucciones y fotos de polea coinciden. Estas propuestas se aplican solo al elegir Usar esta combinación en una rutina abierta, sin cambiar selecciones o registros existentes automáticamente. No se promete aislar partes del pecho o cabezas del bíceps; la variación es planificada y una selección estable permite comparar la progresión.
+
+
+## Un día con horarios flexibles
+
+Mi Día permite elegir «Otro horario», indicar la hora de gimnasio y marcar la asistencia. `gymVisits` guarda el horario únicamente para esa fecha: `schedule` mantiene los horarios habituales y el check original `tasks[fecha+'-gym']` sigue siendo la fuente de asistencia. La agenda mueve la salida y la ducha junto a la visita, con horas orientativas. La asistencia no marca ejercicios de fuerza automáticamente.
+
+Comidas añade una nota de desayuno tardío u omitido por trabajo o falta de tiempo en `mealAdjustments`, sin cambiar las marcas `meals` ni los platos de `foodLog`. El resumen distingue registros pendientes de comidas omitidas explícitamente; las ideas para la siguiente comida usan sólo los ingredientes escritos, sin inventar cantidades o recomendar compensaciones.
+
+El cierre conserva el horario y la nota de desayuno en `gymVisit` y `mealAdjustment`, junto al resto de registros. Ambos controles quedan bloqueados hasta reabrir el día. Los cierres anteriores siguen funcionando sin estos campos. Exportar/restaurar incluye los nuevos registros; un fallo de guardado conserva los datos anteriores.
+
+La bienvenida usa un emblema vectorial de mancuerna y una composición oscura y azul, con nombre destacado. Mantiene la entrada de 420 ms, el desvanecimiento de 200 ms y el respeto por movimiento reducido.
+
+Publicar también `daily-planner.js`. Pruebas: `node tests/daily-planner-smoke.cjs`, `node tests/meal-recovery-smoke.cjs` y `node tests/welcome-smoke.cjs`, con las mismas variables `APP_URL` y `CHROMIUM_PATH`. Comprueban datos anteriores, cambios por fecha, persistencia, respaldo/restauración, fallos de almacenamiento, cierre inmutable y pantallas móviles.
