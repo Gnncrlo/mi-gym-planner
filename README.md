@@ -46,3 +46,11 @@ Inicio muestra tres recomendaciones locales: movimiento según el día real de l
 Las tarjetas se recalculan al abrir Inicio y al volver a la app. Sus botones abren la sección correspondiente en la fecha de hoy, aunque antes se consultara otra fecha o rutina. Se usa la fecha local del dispositivo. No se migran, eliminan ni reescriben registros anteriores para generar recomendaciones, y no se envían datos a servicios externos.
 
 Publicar también `recommendations.js`. Prueba de escenarios: `node tests/recommendations-smoke.cjs`, con los mismos requisitos y variables de las otras pruebas.
+
+## Comidas
+
+La navegación reemplaza Hábitos por Comidas. El diario permite describir ingredientes, preparación y hambre/saciedad, recibir sugerencias generales y añadir detalles a un registro existente. Las ideas de desayuno, almuerzo, cena y snack cambian según la fecha. Las sugerencias se calculan con las palabras de la descripción; no reconocen fotos, no son un chat con un modelo de IA ni estiman calorías o cantidades. No se envían los registros a un servidor.
+
+`foodLog` se añade a `mgp-v2` y se incluye en exportación/restauración. Los datos anteriores de alimentos (`meals`), agua y sueño se conservan. Agua y descanso está en Más; las recomendaciones de Inicio enlazan allí cuando corresponde. El identificador anterior `habitos` sigue funcionando como alias de Comidas. Si no hay espacio para guardar una comida, se conserva el diario anterior y se muestra un error.
+
+Publicar también `nutrition.js`. Prueba: `node tests/foods-smoke.cjs`, con los mismos requisitos que las otras pruebas. Incluye diario, edición, negaciones en ingredientes, hambre/saciedad, preservación de datos anteriores, respaldos, HTML escapado y fallo de almacenamiento.
