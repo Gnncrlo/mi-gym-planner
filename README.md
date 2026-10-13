@@ -90,3 +90,9 @@ Publicar también `day-journal.js`, `progress-tracker.js` y `welcome.js`. Prueba
 Un cierre activo bloquea checks y registros de la fecha (actividades, comidas, agua, sueño y el peso de hoy si está cerrado) y los registros de fuerza/cardio de su semana y rutina, incluso al cambiar la fecha visible. Se siguen pudiendo consultar las fichas y las actividades de cardio, sin editar cargas, repeticiones o variantes. Las marcas y los valores visibles de una rutina cerrada proceden de su resumen guardado, sin sobrescribir datos anteriores. El calendario muestra una marca de cierre.
 
 Reabrir mediante confirmación habilita la edición y conserva el resumen anterior. Las semanas y fechas abiertas siguen siendo editables. Además de desactivar controles, los manejadores bloquean cambios sobre registros cerrados. Prueba: `node tests/closed-locks-smoke.cjs`.
+
+## Entrada fluida y variación A/B
+
+La bienvenida usa una entrada coordinada de opacidad/desplazamiento y una salida de opacidad hacia la app ya renderizada. Se han quitado las animaciones separadas de escala/rotación del logo y el aro. Entrar y Escape usan la misma salida; movimiento reducido sigue sin animaciones. El cierre del diálogo conserva un temporizador de seguridad y restaura el foco.
+
+La propuesta de Push B incluye aperturas de polea alta hacia abajo para variar el énfasis esternocostal respecto al press inclinado. Pull B propone curl con barra y predicador para variar la posición del brazo respecto al curl de pie y martillo del día A. Las instrucciones y fotos de polea coinciden. Estas propuestas se aplican solo al elegir Usar esta combinación en una rutina abierta, sin cambiar selecciones o registros existentes automáticamente. No se promete aislar partes del pecho o cabezas del bíceps; la variación es planificada y una selección estable permite comparar la progresión.

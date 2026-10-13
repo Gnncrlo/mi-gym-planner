@@ -40,6 +40,8 @@ setTargets(['Elevación talones sentado'],'calves','Sóleo · músculo profundo 
 setTargets(['Plancha','Plancha con rodillas apoyadas','Plancha inclinada en banco'],'core','Core · estabilidad abdominal y del tronco','Oblicuos, glúteos y estabilizadores del hombro','La tarea principal es resistir el movimiento y mantener el tronco estable, no flexionarlo.');
 setTargets(['Dead bug'],'core','Core · control abdominal y estabilidad lumbar','Oblicuos y flexores de cadera','Al alternar brazo y pierna, el abdomen resiste la extensión lumbar y mantiene el tronco estable.');
 setTargets(['Crunch','Crunch en polea'],'core','Recto abdominal · parte anterior del abdomen','Oblicuos','Acercar costillas y pelvis flexiona el tronco. No aísla una zona superior o inferior del abdomen.');
+setTargets(['Aperturas en polea'],'chest','Pecho · ángulo hacia la región esternocostal inferior','Deltoides anterior','Con las poleas altas y un recorrido hacia abajo cambia el énfasis de las fibras esternocostales. No aísla un músculo inferior independiente.');
+setTargets(['Curl predicador'],'biceps','Bíceps braquial · brazo delante del tronco','Braquial y braquiorradial','El apoyo y la posición adelantada del brazo varían el estímulo respecto al curl de pie. Ambas cabezas del bíceps siguen participando.');
 function workoutSectors(day,state=S){
  const groups=new Map();
  plan[day].ex.forEach(([original,sets],index)=>{

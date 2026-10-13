@@ -617,7 +617,7 @@ const variantTechnique = {
  'Plancha con rodillas apoyadas':'Apoya antebrazos y rodillas sobre una esterilla, codos bajo hombros.|Alinea hombros, cadera y rodillas apretando abdomen.|Respira normalmente y termina antes de perder la postura.',
  'Plancha inclinada en banco':'Apoya antebrazos en un banco estable y aleja los pies.|Mantén una línea entre cabeza, cadera y talones.|Respira normalmente sin hundir la espalda.',
  'Dead bug':'Túmbate con brazos hacia arriba y caderas y rodillas a 90°.|Extiende despacio un brazo y la pierna contraria sin despegar la zona lumbar.|Vuelve y alterna; acorta el recorrido si se arquea la espalda.',
- 'Aperturas en polea':'Coloca dos poleas a la altura del pecho y adelanta un pie.|Junta las manos al frente con codos ligeramente flexionados.|Abre despacio sin llevar los brazos demasiado atrás.',
+ 'Aperturas en polea':'Coloca las poleas en posición alta y adelanta un pie con el tronco estable.|Con codos ligeramente flexionados, acerca las manos en diagonal hacia el abdomen superior, sin cruzarlas ni balancearte.|Vuelve lentamente a un rango cómodo, sin llevar los brazos demasiado atrás.',
  'Aperturas en máquina':'Ajusta el asiento para que las asas estén a la altura del pecho.|Junta los brazos con espalda apoyada y codos ligeramente flexionados.|Abre despacio hasta un rango cómodo.',
  'Aperturas con banda':'Fija una banda detrás de ti a la altura del pecho en un soporte seguro.|Junta las manos al frente con codos ligeramente flexionados.|Abre lentamente sin forzar los hombros.',
  'Dominadas asistidas con agarre neutro':'Ajusta la asistencia y usa las asas con palmas enfrentadas.|Desde el apoyo de rodillas, tira llevando los codos abajo.|Baja despacio y usa los escalones para salir.',
