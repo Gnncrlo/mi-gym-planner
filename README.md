@@ -74,3 +74,13 @@ Las tarjetas de ejercicios muestran foto, series, zona y controles de registro e
 Al final de cada día se puede elegir caminar, correr o bicicleta, anotar minutos y marcar completado. `cardio` guarda cada actividad de forma independiente por semana y día, sin mezclarse con los registros de fuerza. Se incluye en los respaldos. En días de piernas se propone empezar más suave; domingo mantiene el descanso y cualquier actividad es opcional.
 
 Publicar también `workout-finish.js`. Prueba: `node tests/workout-finish-smoke.cjs`; cubre combinaciones válidas, registros de fuerza intactos, cardio por actividad/semana/día, exportación/restauración y móvil.
+
+## Cierre del día, estadísticas y bienvenida
+
+Mi Día y el final de Rutinas permiten elegir fecha y rutina, revisar un resumen y confirmar el cierre. `dayHistory` conserva una copia independiente de ejercicios, variantes, cargas y repeticiones, cardio, peso de esa fecha, agua, sueño, comidas y actividades. `closedDays` identifica el cierre activo por fecha. Reabrir quita la marca de cerrado pero conserva versiones anteriores; volver a cerrar añade una revisión. Los registros originales no se borran ni se completan automáticamente. Se puede cerrar un día parcial o de descanso; no se añaden mediciones de peso ausentes ni se cierran fechas futuras. Los cambios posteriores de los registros originales no reescriben el resumen guardado.
+
+Progreso muestra gráfica de peso, cargas y repeticiones por ejercicio, y un historial de días con sus versiones. La fuerza se compara por nombre de ejercicio, sin sumar movimientos distintos ni estimar máximos o volumen. Los registros antiguos sin fecha mantienen su semana; una posición que ya tiene un cierre usa su copia guardada para evitar cambiar estadísticas históricas al editar datos actuales. Las gráficas por fecha usan los cierres. Una fecha con varias versiones cuenta una sola vez, con la última versión guardada. Los cierres y sus versiones se incluyen en los respaldos; un fallo de almacenamiento conserva los registros y muestra un error.
+
+La bienvenida animada muestra el nombre del perfil al cargar la app y al regresar después de 30 minutos en segundo plano. Se cierra sola, tiene botón Entrar y respeta movimiento reducido. No se repite al cambiar de sección.
+
+Publicar también `day-journal.js`, `progress-tracker.js` y `welcome.js`. Pruebas: `node tests/day-journal-smoke.cjs` y `node tests/welcome-smoke.cjs` (mismos requisitos y variables que las otras pruebas).
