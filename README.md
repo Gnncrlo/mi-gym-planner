@@ -38,3 +38,11 @@ Publica también `exercise-photos.js` y la carpeta `assets/exercises/`.
 La bienvenida utiliza `profileName` en el objeto existente `mgp-v2`, con Giancarlo como nombre inicial. Se puede cambiar desde Más → Tu perfil y se incluye en los respaldos. No cambia las claves ni los registros anteriores. `design.css` aplica el diseño oscuro y azul a todas las secciones; se publica junto con los otros archivos.
 
 Prueba adicional de la interfaz: `node tests/interface-smoke.cjs` (mismos requisitos que la prueba de fichas). Verifica nombre y persistencia, registros de actividad y peso, agua y navegación a 320, 375, 390 y 1024 px.
+
+## Recomendaciones diarias
+
+Inicio muestra tres recomendaciones locales: movimiento según el día real de la semana, hidratación según el agua registrada hoy y descanso o una idea que cambia cada día. El sueño ausente se distingue de cero horas registradas. Una sesión completada invita a recuperarse; un descanso corto invita a reducir intensidad si hay cansancio. La referencia de agua de la app no es una prescripción personalizada.
+
+Las tarjetas se recalculan al abrir Inicio y al volver a la app. Sus botones abren la sección correspondiente en la fecha de hoy, aunque antes se consultara otra fecha o rutina. Se usa la fecha local del dispositivo. No se migran, eliminan ni reescriben registros anteriores para generar recomendaciones, y no se envían datos a servicios externos.
+
+Publicar también `recommendations.js`. Prueba de escenarios: `node tests/recommendations-smoke.cjs`, con los mismos requisitos y variables de las otras pruebas.
