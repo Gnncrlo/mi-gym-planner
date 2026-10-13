@@ -58,3 +58,11 @@ Publicar también `nutrition.js`. Prueba: `node tests/foods-smoke.cjs`, con los 
 ## Configuración
 
 Más presenta perfil y grupos de ajustes con filas táctiles, horarios desplegables, preferencia de recordatorios y acciones de respaldo. Los horarios y preferencias mantienen sus campos originales. La preferencia de recordatorios no activa notificaciones automáticas. Prueba de ajustes y respaldos: `node tests/settings-smoke.cjs`.
+
+## Rutinas por sectores musculares
+
+Cada día de Rutinas agrupa sus ejercicios por el músculo de énfasis principal. Los accesos de áreas llevan a Pecho, Espalda, Hombros, Tríceps, Bíceps y brazos, Cuádriceps, Femorales, Glúteos, Pantorrillas o Abdomen y core según corresponda. Cada ejercicio muestra su zona; su ficha y sus tres alternativas explican el énfasis y los músculos que colaboran, sin prometer aislamiento de zonas.
+
+Una variante puede cambiar de sector (por ejemplo, peso muerto rumano → puente de glúteos). El índice original del ejercicio se conserva al agrupar: `done`, `loads`, `reps` y `substitutions` siguen usando las mismas claves de semana, día y posición. No se duplican ejercicios ni se migra ningún registro. Domingo sigue siendo descanso.
+
+Publicar también `muscle-sectors.js`. Prueba: `node tests/sectors-smoke.cjs`; verifica las 30 posiciones y las 90 alternativas, todos los sectores, cambios de sector sin perder registros y pantallas móviles.
