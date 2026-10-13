@@ -43,7 +43,8 @@ setTargets(['Crunch','Crunch en polea'],'core','Recto abdominal · parte anterio
 function workoutSectors(day,state=S){
  const groups=new Map();
  plan[day].ex.forEach(([original,sets],index)=>{
-  const selected=state.substitutions?.[state.week+'-'+day+'-'+index];
+  const archived=workoutClosure(state.week,day,state)?.exercises.find(e=>e.slot===index);
+  const selected=archived?.name||state.substitutions?.[state.week+'-'+day+'-'+index];
   const name=exerciseGuide[original].variants.includes(selected)?selected:original;
   const target=exerciseTargets[name],key=target.sector;
   if(!groups.has(key))groups.set(key,{key,...muscleSectors[key],exercises:[]});
@@ -52,13 +53,13 @@ function workoutSectors(day,state=S){
  return [...groups.values()];
 }
 function renderSectorExercise({original,name,sets,index:i,target}){
- return `<article class="item sector-exercise ${S.done[wk(i)]?'exercise-is-done':''}"><div class="row"><input class="exercise-check" aria-label="Completar ${esc(name)}" type="checkbox" data-ex="${i}" ${S.done[wk(i)]?'checked':''}><button class="exercise-open" data-guide="${i}" aria-haspopup="dialog"><img class="exercise-thumb" loading="lazy" src="${esc((exercisePhotos[name]||exercisePhotos[original]).images[0])}" alt=""><span class="exercise-label"><b>${esc(name)}</b><span class="small muted">${esc(sets)}</span><span class="exercise-zone">${esc(target.zone)}</span></span><span class="exercise-chevron" aria-hidden="true">›</span></button></div><div class="exercise-records"><label for="load-${i}"><span>PESO · KG</span><input id="load-${i}" class="field" type="number" min="0" step="0.5" data-load="${i}" aria-label="Peso en kg de ${esc(name)}" placeholder="0" value="${esc(S.loads[wk(i)]??'')}"></label><label for="reps-${i}"><span>REPETICIONES</span><input id="reps-${i}" class="field" type="number" min="0" data-reps="${i}" aria-label="Repeticiones de ${esc(name)}" placeholder="10" value="${esc(S.reps[wk(i)]??'')}"></label></div></article>`;
+ return `<article class="item sector-exercise ${workoutMarked(i)?'exercise-is-done':''}"><div class="row"><input class="exercise-check" aria-label="Completar ${esc(name)}" type="checkbox" data-ex="${i}" ${workoutMarked(i)?'checked':''}><button class="exercise-open" data-guide="${i}" aria-haspopup="dialog"><img class="exercise-thumb" loading="lazy" src="${esc((exercisePhotos[name]||exercisePhotos[original]).images[0])}" alt=""><span class="exercise-label"><b>${esc(name)}</b><span class="small muted">${esc(sets)}</span><span class="exercise-zone">${esc(target.zone)}</span></span><span class="exercise-chevron" aria-hidden="true">›</span></button></div><div class="exercise-records"><label for="load-${i}"><span>PESO · KG</span><input id="load-${i}" class="field" type="number" min="0" step="0.5" data-load="${i}" aria-label="Peso en kg de ${esc(name)}" placeholder="0" value="${esc(S.loads[wk(i)]??'')}"></label><label for="reps-${i}"><span>REPETICIONES</span><input id="reps-${i}" class="field" type="number" min="0" data-reps="${i}" aria-label="Repeticiones de ${esc(name)}" placeholder="10" value="${esc(S.reps[wk(i)]??'')}"></label></div></article>`;
 }
 function renderWorkoutSectors(){
  const groups=workoutSectors(S.day);
  if(!groups.length)return '<div class="card routine-rest"><span class="daily-icon">'+uiIcon('moon')+'</span><h3>Recuperación y descanso</h3><p class="hint">Hoy no tienes ejercicios programados. Puedes hacer movilidad suave si te apetece.</p></div>';
  return '<div class="muscle-overview"><p class="eyebrow">ÁREAS DE ESTE DÍA</p><div class="muscle-links">'+groups.map(g=>'<a href="#sector-'+g.key+'">'+esc(g.name)+' <span>'+g.exercises.length+'</span></a>').join('')+'</div><p class="hint">Toca una foto para ver técnica, zonas y variantes.</p></div>'+groups.map(g=>{
-  const done=g.exercises.filter(e=>S.done[wk(e.index)]).length;
+  const done=g.exercises.filter(e=>workoutMarked(e.index)).length;
   return '<section class="muscle-sector" id="sector-'+g.key+'" data-sector="'+g.key+'" aria-labelledby="sector-title-'+g.key+'"><header class="muscle-sector-head"><div><h3 id="sector-title-'+g.key+'">'+esc(g.name)+'</h3><p>'+esc(g.location)+'</p></div><span class="sector-count">'+done+'/'+g.exercises.length+'</span></header>'+g.exercises.map(renderSectorExercise).join('')+'</section>';
  }).join('');
 }

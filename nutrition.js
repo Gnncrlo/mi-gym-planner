@@ -30,7 +30,7 @@ function reviewMeal(description, type) {
  return {found,title:'Una idea para complementar tu comida',suggestions,question:hungry||satisfied?'¿Qué te gustaría cambiar o variar en tu próxima comida? Puedes añadir más detalles.':'¿Te quedaste con hambre o satisfecho? Puedes añadir ese detalle a tu descripción.'};
 }
 function renderFoods(){
- const checks=S.meals[selectedDate]||{},logs=(Array.isArray(S.foodLog)?S.foodLog:[]).filter(e=>e.date===selectedDate);
+ const closed=closedDay(selectedDate);const checks=closed?closed.meals:S.meals[selectedDate]||{},logs=(closed?closed.foods:Array.isArray(S.foodLog)?S.foodLog:[]).filter(e=>e.date===selectedDate);
  const ordinal=Math.floor(Date.parse(selectedDate+'T12:00:00Z')/86400000)||0;
  const type=Number.isInteger(foodDraft.type)?foodDraft.type:1,ideas=foodExamples[type],idea=ideas[((ordinal%ideas.length)+ideas.length)%ideas.length];
  return `<h2>Comidas</h2><p class="section-subtitle">Ideas para comer y un espacio para contarme tu plato.</p>
@@ -47,10 +47,10 @@ function attachFoodInteractions(){
  document.addEventListener('click',e=>{
   if(e.target.closest('[data-food-cancel]')){foodDraft={text:'',type:foodDraft.type};render()}
   const type=e.target.closest('[data-food-type]');if(type){foodDraft.type=+type.dataset.foodType;render()}
-  const detail=e.target.closest('[data-food-detail]');if(detail){const entry=S.foodLog?.find(e=>e.id===detail.dataset.foodDetail);if(entry){foodDraft={text:entry.text+'\n',type:+entry.type,editId:entry.id,editDate:entry.date};render();const input=document.querySelector('#foodDescription');input.focus();input.setSelectionRange(input.value.length,input.value.length)}}
+  const detail=e.target.closest('[data-food-detail]');if(detail&&!closedDay(selectedDate)){const entry=S.foodLog?.find(e=>e.id===detail.dataset.foodDetail);if(entry){foodDraft={text:entry.text+'\n',type:+entry.type,editId:entry.id,editDate:entry.date};render();const input=document.querySelector('#foodDescription');input.focus();input.setSelectionRange(input.value.length,input.value.length)}}
  });
  document.addEventListener('submit',e=>{
-  if(e.target.id!=='foodForm')return;e.preventDefault();const text=foodDraft.text.trim().slice(0,1500);const error=document.querySelector('#foodError');
+  if(e.target.id!=='foodForm')return;e.preventDefault();if(closedDay(selectedDate)){render();return}const text=foodDraft.text.trim().slice(0,1500);const error=document.querySelector('#foodError');
   if(!text){error.hidden=false;error.textContent='Cuéntame los ingredientes de tu comida para poder orientarte.';return}
   const previousLog=S.foodLog;const log=Array.isArray(previousLog)?previousLog:[];const now=new Date();
   const entry={id:foodDraft.editId||crypto.randomUUID(),date:foodDraft.editDate||selectedDate,type:foodDraft.type,text,time:new Intl.DateTimeFormat('es-PE',{hour:'2-digit',minute:'2-digit'}).format(now)};

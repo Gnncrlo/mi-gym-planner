@@ -7,7 +7,8 @@ function dailyRecommendations(state, date=new Date()) {
  const waterValue=Number(state.water?.[key]), water=Number.isFinite(waterValue)?Math.max(0,waterValue):0;
  const sleepValue=state.sleep?.[key], hours=Number(sleepValue);
  const hasSleep=sleepValue!==undefined&&sleepValue!==null&&String(sleepValue).trim()!==''&&Number.isFinite(hours)&&hours>=0&&hours<=24;
- const done=routine.ex.filter((_,i)=>state.done?.[state.week+'-'+day+'-'+i]).length;
+ const archived=workoutClosure(state.week,day,state);
+ const done=archived?archived.exercises.filter(e=>e.done).length:routine.ex.filter((_,i)=>state.done?.[state.week+'-'+day+'-'+i]).length;
  const lowSleep=hasSleep&&hours<6;
  let training={icon:'dumbbell',tag:'MOVIMIENTO',title:'Hoy toca '+routine.title,text:routine.muscle+'. Empieza con movilidad suave y una serie ligera antes de aumentar la carga.',action:'Ver rutina de hoy',tab:'rutina',day};
  if(!routine.ex.length)training={icon:'moon',tag:'RECUPERACIÓN',title:'Hoy también cuenta descansar',text:'Tu plan marca descanso. Si te apetece, camina un poco o haz movilidad suave, sin convertirlo en otra sesión intensa.',action:'Organizar mi día',tab:'dia'};

@@ -13,7 +13,7 @@
  function openGuide(index, opener) {
   slot=index; returnFocus=opener;
   const original=plan[S.day].ex[index][0], name=chosenExercise(index), guide=exerciseGuide[name];
-  const variants=exerciseGuide[original].variants;
+  const variants=exerciseGuide[original].variants;const locked=workoutClosure();
   const target=exerciseTargets[name],sector=muscleSectors[target.sector];
   dialog.innerHTML=`<div class="guide-head"><h2 id="exercise-title">${esc(name)}</h2><button class="guide-close" aria-label="Cerrar ficha" autofocus>×</button></div>
    ${name!==original?`<p class="guide-note">Sustituye a ${esc(original)} en esta semana y día.</p>`:''}
@@ -21,9 +21,9 @@
    <div class="target-panel"><span class="food-kicker">ZONA QUE TRABAJAS · ${esc(sector.name.toUpperCase())}</span><h3>${esc(target.zone)}</h3><p>${esc(target.detail)}</p><p><b>También participan:</b> ${esc(target.secondary)}.</p></div><h3>Músculos principales</h3><p>${esc(guide.muscles)}</p>
    <h3>Paso a paso</h3><ol>${guide.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
    <h3>Errores frecuentes</h3><ul>${guide.mistakes.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>
-   <h3>Tres alternativas</h3><p class="guide-note">Conservas las series y repeticiones previstas. La carga registrada se conserva como referencia: ajústala al equipo y al ejercicio elegido.</p>
-   ${variants.map((v,i)=>`<div class="variant-option"><b>${esc(v)}</b><p class="variant-zone">${esc(muscleSectors[exerciseTargets[v].sector].name)} · ${esc(exerciseTargets[v].zone)}</p><p class="guide-note">${esc(exerciseGuide[v].steps.join(' '))}</p><button class="btn ${v===name?'secondary':''}" data-variant="${i}" ${v===name?'disabled':''}>${v===name?'En tu rutina':'Usar esta variante'}</button></div>`).join('')}
-   ${name!==original?'<button class="btn secondary" data-original>Volver al ejercicio original</button>':''}`;
+   ${locked?'<p class="closed-lock-note">Día cerrado. Reábrelo desde Rutinas para elegir otra variante.</p>':''}<h3>Tres alternativas</h3><p class="guide-note">Conservas las series y repeticiones previstas. La carga registrada se conserva como referencia: ajústala al equipo y al ejercicio elegido.</p>
+   ${variants.map((v,i)=>`<div class="variant-option"><b>${esc(v)}</b><p class="variant-zone">${esc(muscleSectors[exerciseTargets[v].sector].name)} · ${esc(exerciseTargets[v].zone)}</p><p class="guide-note">${esc(exerciseGuide[v].steps.join(' '))}</p><button class="btn ${v===name?'secondary':''}" data-variant="${i}" ${v===name||locked?'disabled':''}>${v===name?'En tu rutina':'Usar esta variante'}</button></div>`).join('')}
+   ${name!==original?`<button class="btn secondary" data-original ${locked?'disabled':''}>Volver al ejercicio original</button>`:''}`;
   dialog.querySelector('.exercise-photo').addEventListener('error',()=>{dialog.querySelector('.photo-error').hidden=false});
   dialog.querySelector('.exercise-photo').addEventListener('load',()=>{dialog.querySelector('.photo-error').hidden=true});
   previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';dialog.showModal();dialog.scrollTop=0;
@@ -38,7 +38,7 @@
    dialog.querySelectorAll('[data-photo]').forEach(b=>b.setAttribute('aria-pressed',String(b===photoButton)));
   }
   const button=e.target.closest('[data-variant],[data-original]');
-  if(!button)return;
+  if(!button||workoutClosure())return;
   const original=plan[S.day].ex[slot][0];
   S.substitutions??={};
   if(button.hasAttribute('data-original'))delete S.substitutions[wk(slot)];

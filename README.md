@@ -84,3 +84,9 @@ Progreso muestra gráfica de peso, cargas y repeticiones por ejercicio, y un his
 La bienvenida animada muestra el nombre del perfil al cargar la app y al regresar después de 30 minutos en segundo plano. Se cierra sola, tiene botón Entrar y respeta movimiento reducido. No se repite al cambiar de sección.
 
 Publicar también `day-journal.js`, `progress-tracker.js` y `welcome.js`. Pruebas: `node tests/day-journal-smoke.cjs` y `node tests/welcome-smoke.cjs` (mismos requisitos y variables que las otras pruebas).
+
+## Bloqueo de días cerrados
+
+Un cierre activo bloquea checks y registros de la fecha (actividades, comidas, agua, sueño y el peso de hoy si está cerrado) y los registros de fuerza/cardio de su semana y rutina, incluso al cambiar la fecha visible. Se siguen pudiendo consultar las fichas y las actividades de cardio, sin editar cargas, repeticiones o variantes. Las marcas y los valores visibles de una rutina cerrada proceden de su resumen guardado, sin sobrescribir datos anteriores. El calendario muestra una marca de cierre.
+
+Reabrir mediante confirmación habilita la edición y conserva el resumen anterior. Las semanas y fechas abiertas siguen siendo editables. Además de desactivar controles, los manejadores bloquean cambios sobre registros cerrados. Prueba: `node tests/closed-locks-smoke.cjs`.
