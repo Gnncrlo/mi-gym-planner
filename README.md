@@ -32,3 +32,9 @@ Opcionalmente configura `APP_URL` o `CHROMIUM_PATH`. La prueba usa un navegador 
 Las imágenes se incluyen en `assets/exercises/` y se sirven desde GitHub Pages, sin conexiones a servicios de imágenes externos. Proceden de Free Exercise DB (Unlicense); la licencia y las fuentes están en esa carpeta. `exercise-photos.js` contiene la correspondencia con las fichas. Si una alternativa no tiene una foto exacta, la ficha identifica la referencia del ejercicio original; no la presenta como una foto de la variante. Las diferencias de equipo o postura también se indican explícitamente.
 
 Publica también `exercise-photos.js` y la carpeta `assets/exercises/`.
+
+## Interfaz y bienvenida
+
+La bienvenida utiliza `profileName` en el objeto existente `mgp-v2`, con Giancarlo como nombre inicial. Se puede cambiar desde Más → Tu perfil y se incluye en los respaldos. No cambia las claves ni los registros anteriores. `design.css` aplica el diseño oscuro y azul a todas las secciones; se publica junto con los otros archivos.
+
+Prueba adicional de la interfaz: `node tests/interface-smoke.cjs` (mismos requisitos que la prueba de fichas). Verifica nombre y persistencia, registros de actividad y peso, agua y navegación a 320, 375, 390 y 1024 px.
