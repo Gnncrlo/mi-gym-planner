@@ -49,11 +49,25 @@ Publicar también `recommendations.js`. Prueba de escenarios: `node tests/recomm
 
 ## Comidas
 
-La navegación reemplaza Hábitos por Comidas. El diario permite describir ingredientes, preparación y hambre/saciedad, recibir sugerencias generales y añadir detalles a un registro existente. Las ideas de desayuno, almuerzo, cena y snack cambian según la fecha. Las sugerencias se calculan con las palabras de la descripción; no reconocen fotos, no son un chat con un modelo de IA ni estiman calorías o cantidades. No se envían los registros a un servidor.
+La navegación reemplaza Hábitos por Comidas. Hay 40 ideas: diez desayunos, diez almuerzos, diez cenas y diez snacks de media mañana o tarde. Cada receta muestra ingredientes, preparación y tiempo aproximado; cuando usa ingredientes ya cocidos o preparados, lo indica. Puedes filtrar por rápidas (hasta 15 minutos), económicas, vegetarianas, sin cocinar o para llevar. El orden cambia según la fecha y «Ver otras opciones» recorre las alternativas.
+
+«Describir mi plato» lleva al diario y conserva cualquier texto que ya estuvieras escribiendo. Elegir una receta solo deja una referencia temporal: no registra ingredientes consumidos, no marca comidas y no guarda preferencias. Para registrar lo que realmente comiste, escribe tu descripción y pulsa «Guardar y recibir sugerencias». Los días cerrados permiten consultar recetas y conservan bloqueado su diario.
+
+El diario permite describir ingredientes, preparación y hambre/saciedad, recibir sugerencias concretas para cada tipo de comida y añadir detalles a un registro existente. Por ejemplo, pan con café en el desayuno propone opciones de proteína y fruta; arroz con pollo ofrece verduras para acompañar; un snack de fruta puede complementarse de forma opcional. Reconoce más ingredientes habituales en Perú y distingue negaciones, bebidas vegetales y saciedad. Las sugerencias se calculan localmente con las palabras de la descripción; no reconocen fotos, no son un chat con un modelo de IA ni estiman calorías o cantidades. No se envían los registros a un servidor.
 
 `foodLog` se añade a `mgp-v2` y se incluye en exportación/restauración. Los datos anteriores de alimentos (`meals`), agua y sueño se conservan. Agua y descanso está en Más; las recomendaciones de Inicio enlazan allí cuando corresponde. El identificador anterior `habitos` sigue funcionando como alias de Comidas. Si no hay espacio para guardar una comida, se conserva el diario anterior y se muestra un error.
 
-Publicar también `nutrition.js`. Prueba: `node tests/foods-smoke.cjs`, con los mismos requisitos que las otras pruebas. Incluye diario, edición, negaciones en ingredientes, hambre/saciedad, preservación de datos anteriores, respaldos, HTML escapado y fallo de almacenamiento.
+Publicar también `nutrition.js`, `meal-advice.js`, `meal-ideas.js`, `meal-explorer.js` y `design.css` junto a `index.html`. Se conserva el formato de `foodLog` y la clave `mgp-v2`; las nuevas ideas no requieren migrar datos.
+
+Pruebas de lógica sin servidor ni navegador:
+
+```sh
+node tests/meal-advice-smoke.cjs
+node tests/meal-ideas-smoke.cjs
+node tests/meal-flows-smoke.cjs
+```
+
+Comprueban ingredientes, negaciones, hambre/saciedad, variedad y filtros, navegación sin guardar, borradores, registro explícito, edición, fallo de almacenamiento y protección de la fecha original de una comida cerrada. Las pruebas de eventos usan un documento simulado: no verifican diseño ni comportamiento real de iOS. Para la integración en navegador: `node tests/foods-smoke.cjs` y `node tests/meal-recovery-smoke.cjs`, con los mismos requisitos que las otras pruebas. Incluyen diario, edición, preservación de datos anteriores, respaldos, HTML escapado y fallo de almacenamiento.
 
 ## Configuración
 
