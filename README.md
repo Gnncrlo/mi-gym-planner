@@ -113,3 +113,22 @@ Comidas permite registrar desayuno tardío u omitido por trabajo o falta de tiem
 La bienvenida destaca el nombre y una frase propia de disciplina que cambia según la fecha local del dispositivo; la misma frase aparece en Inicio. Conserva la transición suave y respeta movimiento reducido. La entrada automática da tiempo para ver el saludo y el botón permite continuar al momento.
 
 Publicar también `daily-planner.js`, `calendar-planner.js`, `welcome.js`, `nutrition.js`, `day-journal.js` y `design.css`. Pruebas: `node tests/daily-planner-smoke.cjs`, `node tests/calendar-smoke.cjs`, `node tests/meal-recovery-smoke.cjs` y `node tests/welcome-smoke.cjs`, con las mismas variables `APP_URL` y `CHROMIUM_PATH`. Verifican datos anteriores, progreso coherente, marcas de comidas, franjas equivalentes, pendientes por fecha, persistencia, respaldos, fallos de almacenamiento, cierres históricos, navegación y pantallas móviles.
+
+
+## Resumen semanal y progresión
+
+Inicio enlaza a Progreso → Resumen. La revisión usa una semana de calendario local, de lunes a domingo, independiente del número de semana de la rutina. Cuenta visitas explícitas al gym y sesiones de fuerza cerradas por separado, compara mediciones de peso realmente guardadas y muestra un ejemplo de cargas y repeticiones del mismo ejercicio. Los días cerrados usan su copia; los reabiertos y las versiones anteriores no cuentan como nuevas sesiones. Sin marcas no se interpreta que faltó entrenamiento o una comida.
+
+Rutinas añade una sensación opcional: controlado y sin molestias, esfuerzo alto o molestia/dolor. `exerciseFeelings` y `exerciseFeelingNames` guardan el valor junto al nombre exacto de la variante; cambiar de variante no aplica la sensación anterior al nuevo movimiento. Cada cierre conserva `feeling` y el control se bloquea junto a cargas y repeticiones. El respaldo incluye estos campos y las copias anteriores siguen funcionando sin ellos.
+
+Progreso → Fuerza muestra una sugerencia con los cierres activos más recientes de fechas diferentes y el mismo ejercicio. Valorar un incremento exige registros comparables, misma carga, repeticiones al tope y sensación de control en ambos. La recomendación pide comprobar todas las series y la técnica: el campo de repeticiones no demuestra que cada serie alcanzó el objetivo. Nunca se aumentan pesos automáticamente, se fijan kg ni se estiman máximos. Los datos incompletos, molestias, esfuerzo alto, variantes distintas, días reabiertos, revisiones y ejercicios por tiempo/asistencia/bandas no justifican un aumento.
+
+Publicar `weekly-review.js` y `strength-coach.js`. Pruebas: `node tests/weekly-review-smoke.cjs` y `node tests/strength-coach-smoke.cjs`, con las mismas variables opcionales de las otras pruebas.
+
+## Vista muscular y fondo
+
+Las fichas conservan las fotos originales de personas haciendo el ejercicio en dos posiciones y añaden una pestaña Músculos. El mapa usa una ilustración anatómica frontal/posterior consistente con regiones principales en azul y colaboradores en turquesa. Las 79 fichas y sus variantes tienen una correspondencia anatómica; las fotos de referencia conservan su aviso. Las vistas Frente, Espalda y Ambas y el control de colaboradores sólo cambian la visualización, sin escribir datos.
+
+Las zonas son orientativas y no representan porcentajes de activación o aislamiento. Los músculos que quedan ocultos por ropa, postura o banco se explican con el mapa separado, sin pintar regiones inventadas sobre la fotografía de técnica. El sóleo se identifica como profundo. El fondo incorpora luces azules, una cuadrícula tenue y líneas diagonales estáticas, sin animaciones de fondo ni conexiones externas.
+
+Publicar `muscle-atlas.js` y `assets/anatomy/muscle-atlas.png`. Prueba: `node tests/muscle-atlas-smoke.cjs`; cubre los 79 mapas, variantes que cambian de músculo, vistas, controles, técnica original, foco, conservación de registros y móvil.

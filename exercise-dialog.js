@@ -7,8 +7,8 @@
   const exact=exercisePhotos[name], photo=exact||exercisePhotos[original];
   const visualName=exact?name:original;
   const note=exact?(photo.note||'Fotos de una persona realizando el ejercicio.'): `Referencia visual: ${original}. El equipo o la postura de esta variante son distintos; consulta sus pasos.`;
-  return `<div class="guide-art"><img class="exercise-photo" src="${esc(photo.images[0])}" alt="${esc(visualName)}: posición 1" decoding="async" width="850" height="567"><div class="photo-error" hidden>No se pudo cargar la foto. Las instrucciones siguen disponibles debajo.</div>
-   <div class="photo-controls" role="group" aria-label="Posiciones de ${esc(visualName)}">${photo.images.map((src,i)=>`<button type="button" data-photo="${esc(src)}" data-photo-position="${i+1}" data-photo-name="${esc(visualName)}" aria-pressed="${i===0}">Posición ${i+1}</button>`).join('')}</div><p class="photo-caption">${esc(note)}</p></div>`;
+  return `<div class="guide-art"><div class="guide-visual-controls" role="group" aria-label="Vista del ejercicio"><button data-guide-visual="technique" aria-pressed="true">Técnica</button><button data-guide-visual="muscles" aria-pressed="false">Músculos ${uiIcon('arrow')}</button></div><div class="guide-technique-view"><img class="exercise-photo" src="${esc(photo.images[0])}" alt="${esc(visualName)}: posición 1" decoding="async" width="850" height="567"><div class="photo-error" hidden>No se pudo cargar la foto. Las instrucciones siguen disponibles debajo.</div>
+   <div class="photo-controls" role="group" aria-label="Posiciones de ${esc(visualName)}">${photo.images.map((src,i)=>`<button type="button" data-photo="${esc(src)}" data-photo-position="${i+1}" data-photo-name="${esc(visualName)}" aria-pressed="${i===0}">Posición ${i+1}</button>`).join('')}</div><p class="photo-caption">${esc(note)}</p></div><div class="guide-muscles-view" hidden>${renderMuscleAtlas(name)}</div></div>`;
  }
  function openGuide(index, opener) {
   slot=index; returnFocus=opener;
@@ -31,6 +31,8 @@
  document.addEventListener('click',e=>{const button=e.target.closest('[data-guide]');if(button)openGuide(+button.dataset.guide,button)});
  dialog.addEventListener('click',e=>{
   if(e.target.closest('.guide-close'))dialog.close();
+  const visual=e.target.closest('[data-guide-visual]');if(visual){const muscles=visual.dataset.guideVisual==='muscles';dialog.querySelector('.guide-technique-view').hidden=muscles;dialog.querySelector('.guide-muscles-view').hidden=!muscles;dialog.querySelectorAll('[data-guide-visual]').forEach(b=>b.setAttribute('aria-pressed',String(b===visual)))}
+  const view=e.target.closest('[data-atlas-view]');if(view){dialog.querySelector('.muscle-atlas').dataset.view=view.dataset.atlasView;dialog.querySelectorAll('[data-atlas-view]').forEach(b=>b.setAttribute('aria-pressed',String(b===view)))}
   const photoButton=e.target.closest('[data-photo]');
   if(photoButton){
    const img=dialog.querySelector('.exercise-photo');
@@ -45,5 +47,6 @@
   else S.substitutions[wk(slot)]=exerciseGuide[original].variants[+button.dataset.variant];
   save();render();returnFocus=document.querySelector(`[data-guide="${slot}"]`);dialog.close();
  });
+ dialog.addEventListener('change',e=>{if(e.target.hasAttribute('data-atlas-secondary'))dialog.querySelector('.muscle-atlas').classList.toggle('hide-secondary',!e.target.checked)});
  dialog.addEventListener('close',()=>{document.body.style.overflow=previousOverflow;returnFocus?.focus()});
 })();
