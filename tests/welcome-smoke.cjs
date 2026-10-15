@@ -15,7 +15,7 @@ const assert=require('node:assert/strict');
   });
   await page.goto(process.env.APP_URL||'http://127.0.0.1:8000/');
   await page.locator('.welcome-splash').waitFor({state:'detached'});
-  assert.match((await page.evaluate(()=>window.seenWelcomes))[0],/Giancarlo/);
+  assert.match((await page.evaluate(()=>window.seenWelcomes))[0],/Mi perfil/);
   assert.match((await page.evaluate(()=>window.seenWelcomes))[0],/DISCIPLINA DEL DÍA/);
   assert.equal(await page.evaluate(()=>window.seenWelcomes[0].includes(disciplineQuote())),true);
   const quotes=await page.evaluate(()=>Array.from({length:7},(_,i)=>disciplineQuote('2026-10-'+String(13+i))));

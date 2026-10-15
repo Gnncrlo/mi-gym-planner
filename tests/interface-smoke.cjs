@@ -1,7 +1,7 @@
 const {chromium}=require('playwright');const assert=require('node:assert/strict');
 (async()=>{const b=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});try{
 const p=await b.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(process.env.APP_URL||'http://127.0.0.1:8000/');
-await p.getByRole('heading',{name:'Hola, Giancarlo.'}).waitFor();
+await p.getByRole('heading',{name:'Hola, Mi perfil.'}).waitFor();
 await p.locator('#profileAvatar').click();await p.locator('#profileName').fill('Giancarlo Mariñas');await p.locator('#profileName').press('Tab');await p.locator('#nav [data-tab="inicio"]').click();await p.getByRole('heading',{name:'Hola, Giancarlo Mariñas.'}).waitFor();await p.reload();await p.getByRole('heading',{name:'Hola, Giancarlo Mariñas.'}).waitFor();
 const savedName=await p.evaluate(()=>JSON.parse(localStorage.getItem('mgp-v2')).profileName);assert.equal(savedName,'Giancarlo Mariñas');
 await p.locator('#nav [data-tab="dia"]').click();await p.locator('#taskName').fill('Caminar después de comer');await p.locator('[data-action="addTask"]').click();assert.match(await p.locator('#root').innerText(),/Caminar después de comer/);
