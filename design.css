@@ -84,3 +84,62 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;ba
 @media(max-width:360px){.meal-tracker-heading h3{font-size:19px}.meal-tracker-count{font-size:10px;padding:7px 9px}.meal-tracker-item{padding:12px}.meal-mark{gap:10px}.meal-tracker-feedback{padding:10px}.meal-tracker-actions{gap:2px 12px}}
 @media(prefers-reduced-motion:reduce){.meal-tracker button,.food-form-types button{transition:none}.meal-tracker button:active:not(:disabled),.food-form-types button:active:not(:disabled){transform:none}}
 .meal-tracker-description{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}.food-log{scroll-margin-top:18px}.food-log:focus-visible{outline:2px solid #8ac0ff;outline-offset:3px}
+
+/* Each meal opens into its own diary, daily idea and practical feedback. */
+.meal-day-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:24px 0 10px;min-width:0}
+.meal-day-heading h3{margin:0;font-size:21px;line-height:1.4;letter-spacing:-.5px;overflow-wrap:anywhere}
+.meal-day-note{color:#9eb6d3;font-size:12px;line-height:1.8;margin:0 0 17px;overflow-wrap:anywhere}
+.meal-accordion{display:grid;gap:12px;min-width:0}
+.meal-accordion>.meal-panel{min-width:0;margin:0;padding:0;border:1px solid #304c6c;border-radius:21px;background:linear-gradient(125deg,#14273e,#101d30);box-shadow:0 6px 22px #00000012}
+.meal-panel-summary{display:flex;align-items:center;gap:13px;min-height:82px;padding:17px 18px;list-style:none;cursor:pointer;border-radius:20px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.meal-panel-summary::-webkit-details-marker{display:none}
+.meal-panel-summary::marker{content:""}
+.meal-panel-summary:focus-visible{outline:2px solid #a4d0ff;outline-offset:3px}
+.meal-panel-icon{display:grid;place-items:center;flex-shrink:0;width:43px;height:43px;border:1px solid #3c6084;border-radius:14px;background:linear-gradient(135deg,#244d77,#1b3552);color:#b4dcff}
+.meal-panel-icon svg{width:22px;height:22px}
+.meal-panel-title{display:block;flex:1;min-width:0;overflow-wrap:anywhere}
+.meal-panel-title>b{display:block;color:#e4f1ff;font-size:17px;font-weight:700;line-height:1.45;letter-spacing:-.2px}
+.meal-panel-title>small{display:block;margin-top:4px;color:#9bb8d7;font-size:10px;line-height:1.65}
+.meal-panel-arrow{display:grid;place-items:center;flex-shrink:0;width:30px;height:32px;border-radius:10px;background:#1c3551;color:#9dc7f5;transition:transform .18s ease}
+.meal-panel-arrow svg{width:17px;height:17px}
+.meal-panel[open]{border-color:#47739c;background:radial-gradient(ellipse at top right,#245b8040,transparent 55%),linear-gradient(125deg,#14273e,#101d30)}
+.meal-panel[open]>.meal-panel-summary{border-radius:20px 20px 0 0}
+.meal-panel[open]>.meal-panel-summary .meal-panel-arrow{transform:rotate(180deg)}
+.meal-panel-body{padding:0 18px 19px;min-width:0}
+.meal-panel-body>.meal-mark{padding:13px 0 16px;border-top:1px solid #2c4765;border-bottom:1px solid #2c4765;margin:0 0 16px}
+.meal-panel-body>.meal-mark .meal-mark-copy b{font-size:13px}
+.meal-daily-idea{min-width:0;padding:17px 16px;border:1px solid #365b78;border-radius:16px;background:linear-gradient(130deg,#1a3c55,#142a40);margin:0 0 19px}
+.meal-daily-idea .meal-daily-label{margin:0 0 9px;color:#97cddd;font-size:9px;font-weight:700;letter-spacing:1.1px;line-height:1.6;text-transform:uppercase}
+.meal-daily-idea h4{font-size:16px;line-height:1.5;letter-spacing:-.3px;color:#e0f0ff;margin:0 0 9px;overflow-wrap:anywhere}
+.meal-daily-idea>p:not(.meal-daily-label){font-size:11px;line-height:1.8;color:#acc8df;margin:0 0 8px;overflow-wrap:anywhere}
+.meal-daily-idea .text-link{min-height:44px;max-width:100%;font-size:11px;line-height:1.6;white-space:normal;text-align:left;padding:9px 0 0;color:#a6d6ff}
+.meal-daily-idea .text-link svg{flex-shrink:0}
+.meal-panel .food-form{padding:0;margin:0 0 21px;border:0;border-radius:0;background:transparent;box-shadow:none;min-width:0}
+.meal-panel .food-form h3{font-size:17px;line-height:1.5;letter-spacing:-.3px;margin:0 0 10px;overflow-wrap:anywhere}
+.meal-panel .food-form .field{min-width:0}
+.meal-panel .food-form .hint{font-size:11px;line-height:1.8}
+.meal-panel .food-form textarea.field{min-height:112px}
+.meal-panel .food-submit{font-size:12px;line-height:1.6;white-space:normal;min-height:48px}
+.meal-panel-logs{min-width:0;margin-top:20px;padding-top:18px;border-top:1px solid #304b68}
+.meal-panel-logs>h4{font-size:13px;line-height:1.5;font-weight:650;letter-spacing:-.1px;margin:0 0 12px;color:#cce0f6}
+.meal-panel-logs>.food-log{min-width:0;margin:12px 0 0;padding:15px 13px;border-radius:16px;border-color:#2e4966;background:#0d1d30;box-shadow:none}
+.meal-panel-logs .food-description{font-size:13px;line-height:1.8;margin:13px 0 16px}
+.meal-panel-logs .food-feedback{padding:13px 12px;background:#142b43;border-color:#365674;border-radius:12px}
+.meal-panel-logs .food-feedback h3{font-size:15px;line-height:1.5}
+.meal-panel-logs .food-feedback li{font-size:11px;line-height:1.9}
+.meal-panel-logs .food-empty{padding:20px 13px;border-radius:14px}
+.meal-panel-logs .food-empty p{margin-bottom:0;font-size:11px}
+.meal-options-toggle{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;margin-top:18px;padding:11px 13px;border:1px solid #3a5d80;border-radius:13px;background:#19334e;color:#b6d8fc;font:inherit;font-size:11px;line-height:1.6;text-align:center;white-space:normal}
+.meal-options-toggle svg{width:16px;height:16px;flex-shrink:0}
+.meal-options-toggle[aria-expanded=true]{border-color:#78b2df;background:#244b6d;color:#e2f2ff}
+.meal-panel-options{min-width:0;margin-top:13px}
+.meal-panel-options[hidden]{display:none}
+.meal-panel-options>.meal-explorer{padding:15px 13px;margin:0;border-radius:16px;box-shadow:none;background:#0d2135}
+.meal-panel-options .meal-explorer>h3{font-size:21px;margin-top:10px}
+.meal-panel-options .meal-idea-filters{gap:6px}
+.meal-panel-options .meal-idea-filters button{font-size:10px;min-height:44px}
+.meal-panel-options .meal-idea-card{padding:13px 11px}
+.meal-panel-options .meal-ideas-caption{flex-wrap:wrap}
+.meal-panel-options .meal-ideas-caption>span:last-child{font-size:7px}
+@media(max-width:360px){.meal-day-heading h3{font-size:19px}.meal-panel-summary{gap:10px;min-height:78px;padding:16px 13px}.meal-panel-icon{width:38px;height:38px;border-radius:12px}.meal-panel-icon svg{width:20px;height:20px}.meal-panel-title>b{font-size:16px}.meal-panel-title>small{font-size:10px}.meal-panel-arrow{width:26px}.meal-panel-body{padding:0 13px 16px}.meal-daily-idea{padding:15px 12px}.meal-daily-idea h4{font-size:15px}.meal-panel-logs>.food-log{padding:13px 10px}.meal-panel-logs .food-feedback{padding:12px 10px}.meal-panel-options>.meal-explorer{padding:14px 10px}.meal-panel-options .meal-idea-filters button{padding:8px 9px;font-size:9px}}
+@media(prefers-reduced-motion:reduce){.meal-panel-arrow{transition:none}.meal-panel button{transition:none}.meal-panel button:active:not(:disabled){transform:none}}
