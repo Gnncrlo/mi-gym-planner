@@ -40,6 +40,7 @@ function fixture({configured=true,values={},defaults=actualDefaults}={}){
  });
  const run=code=>vm.runInContext(code,context);
  vm.runInContext(read('cloud-api.js'),context,{filename:'cloud-api.js'});
+ vm.runInContext(read('device-profiles.js'),context,{filename:'device-profiles.js'});
  vm.runInContext(source,context,{filename:'cloud-accounts.js'});
  const controller={saved:[],syncs:0,state:null,save(value){calls.sequence.push('save');storage.setItem(cache(ids[0]),JSON.stringify(value));controller.saved.push(copy(value));controller.state=copy(value)},async sync(){calls.sequence.push('sync');controller.syncs++},snapshot:()=>({dirty:false,state:controller.state?copy(controller.state):null}),close(){}};
  const api={async readState(uid,token){assert.equal(uid,ids[0]);assert.equal(token,'PRIVATE_ACCESS_TOKEN');calls.sequence.push('read');return null}};
@@ -82,7 +83,7 @@ function inputTarget(dataset={}){return {id:'cloudEmail',dataset,value:'ana@exam
   const limited=fixture();if(cloud)limited.activate();
   limited.context.foodDraft.text='Do not lose my draft';limited.context.foodDrafts.set('date:0',{text:'Another draft'});
   const original=limited.context.S,before=limited.storage.snapshot();limited.storage.fail=cloud?cache(ids[0]):'mgp-v2';
-  await limited.context.restorePlannerAccount(file(legacy));assert.equal(limited.context.S,original);assert.deepEqual(limited.storage.snapshot(),before);assert.equal(limited.context.foodDraft.text,'Do not lose my draft');assert.equal(limited.context.foodDrafts.size,1);assert.match(limited.run('cloudError'),/QuotaExceeded/);
+  await limited.context.restorePlannerAccount(file({...legacy,loads:{...legacy.loads,newLoad:'65'}}));assert.equal(limited.context.S,original);assert.deepEqual(limited.storage.snapshot(),before);assert.equal(limited.context.foodDraft.text,'Do not lose my draft');assert.equal(limited.context.foodDrafts.size,1);assert.match(limited.run('cloudError'),/QuotaExceeded|No se pudo guardar/);
  }
  const restored=fixture();restored.activate();const original=restored.context.S,oldLegacy=restored.storage.getItem('mgp-v2'),otherBefore=restored.storage.getItem(cache(ids[1]));
  const save=restored.controller.save;restored.controller.save=value=>{assert.equal(restored.context.S,original,'Persist the candidate before replacing the rendered state');assert.equal(value.profileName,'Ana');save(value)};

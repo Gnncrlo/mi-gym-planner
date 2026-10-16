@@ -152,6 +152,18 @@ Las zonas son orientativas y no representan porcentajes de activación o aislami
 Publicar `muscle-atlas.js` y `assets/anatomy/muscle-atlas.png`. Prueba: `node tests/muscle-atlas-smoke.cjs`; cubre los 79 mapas, variantes que cambian de músculo, vistas, controles, técnica original, foco, conservación de registros y móvil.
 
 
+## Usuarios de este dispositivo
+
+En **Más → Usuarios de este dispositivo**, crea un perfil con el nombre de otra persona o vuelve a abrir uno existente. Cada perfil guarda por separado pesos, cargas, repeticiones, comidas, actividades y días cerrados. La bienvenida usa el nombre del perfil abierto. Los perfiles nuevos empiezan sin registros de Giancarlo.
+
+El perfil original conserva `mgp-v2` sin mover ni importar sus registros. Los nuevos usan `mgp-device-profile-v1:<UUID>`. El nombre se puede modificar sin cambiar el identificador. Cada pestaña queda ligada a su propio perfil; elegir otro usuario en una pestaña no redirige los guardados de las demás. Una edición antigua de la misma persona desde otra pestaña se rechaza para conservar la copia más reciente.
+
+El cambio de usuario recarga la app para limpiar formularios, diálogos y temporizadores. Los borradores de comidas deben guardarse o vaciarse antes de cambiar. Un fallo de almacenamiento conserva la copia anterior, mantiene las ediciones visibles y ofrece exportación y reintento. Los respaldos y su restauración corresponden al perfil abierto; una lectura de archivo tardía no puede reemplazar al usuario siguiente.
+
+Son perfiles locales, accesibles para quienes compartan ese navegador, sin contraseñas ni sincronización entre teléfonos. Compartir la URL no envía registros. Las cuentas autenticadas siguen siendo una opción independiente, pendiente de configurar Supabase. Su importación explícita utiliza el perfil local seleccionado y comprueba su nombre en la confirmación.
+
+Publicar también `device-profiles.js`. Prueba sin red ni navegador: `node tests/device-profiles-smoke.cjs`; cubre aislamiento, reapertura, datos anteriores intactos, perfiles con el mismo nombre, pestañas, cuota, reintento, respaldos, restauración tardía y recuperación sin reinicios. La comprobación visual en iPhone permanece pendiente.
+
 ## Cuentas y sincronización
 
 La integración de cuentas está preparada, pero no está activada: `cloud-config.js` conserva URL y clave pública vacías hasta configurar el proyecto. La guía [CUENTAS_Y_SINCRONIZACION.md](docs/CUENTAS_Y_SINCRONIZACION.md) explica crear Supabase, confirmar correos, ejecutar la migración y las pruebas SQL, configurar la URL de GitHub Pages y publicar. Nunca se incluye una clave secreta o `service_role` en el frontend. No se ha provisionado ni probado un backend real.

@@ -44,18 +44,19 @@ function plannerRecordsJSON(state){
 function pendingMealDrafts(){return !!foodDraft.text.trim()||[...foodDrafts.values()].some(draft=>String(draft.text||'').trim())}
 function assertNoPendingMealDrafts(){
  if(pendingMealDrafts())throw Error('Tienes comidas sin guardar. Guárdalas o vacía sus borradores antes de cambiar de cuenta o cargar otros registros.');
+ if(!cloudMode&&deviceSaveFailed)throw Error('Este perfil tiene cambios sin guardar. Descarga una copia y usa Reintentar guardado antes de cambiar de usuario o iniciar sesión.');
  if(cloudStatus?.saveFailed)throw Error('Hay cambios que no se pudieron guardar. Descarga una copia y usa Sincronizar ahora para volver a intentar guardarlos antes de continuar.');
 }
 function cloudStatusText(){
- if(!cloudMode)return 'En este dispositivo';
+ if(!cloudMode)return deviceSaveFailed?'Hay cambios que aún no se han guardado en este dispositivo.':'En este dispositivo';
  if(!cloudReady)return cloudBusy?'Abriendo tu cuenta':'Inicia sesión';
  return cloudStatus?.message||'Comprobando sincronización';
 }
 function updateCloudStatus(){
- const compact=!cloudMode?'Este dispositivo':!cloudReady?cloudBusy?'Conectando…':'Inicia sesión':({syncing:'Guardando…',synced:'Nube al día',offline:'Pendiente',conflict:'Revisar cambios',error:'Revisar guardado'}[cloudStatus?.kind]||'Comprobando…');
+ const compact=!cloudMode?deviceSaveFailed?'Revisar guardado':'Este dispositivo':!cloudReady?cloudBusy?'Conectando…':'Inicia sesión':({syncing:'Guardando…',synced:'Nube al día',offline:'Pendiente',conflict:'Revisar cambios',error:'Revisar guardado'}[cloudStatus?.kind]||'Comprobando…');
  document.querySelectorAll('[data-cloud-status]').forEach(element=>{element.textContent=element.classList.contains('profile-active-tag')?compact:cloudStatusText()});
  document.querySelectorAll('[data-cloud-conflict-ui]').forEach(element=>{element.hidden=cloudStatus?.kind!=='conflict'});
- document.querySelectorAll('[data-cloud-save-notice]').forEach(element=>{element.hidden=!cloudReady||!cloudStatus?.saveFailed});
+ document.querySelectorAll('[data-cloud-save-notice]').forEach(element=>{element.hidden=cloudMode?!cloudReady||!cloudStatus?.saveFailed:!deviceSaveFailed});
 }
 function cloudErrorText(error){return error?.message||'No se pudo completar la operación. Tus registros guardados se conservan.'}
 function cloudAccountForm(){
@@ -65,14 +66,14 @@ function cloudAccountForm(){
 function renderCloudAccountCard({gate=false}={}){
  const configured=cloudConfigured();
  if(cloudMode&&cloudReady){
-  const conflict=cloudStatus?.kind==='conflict';let hasLegacy=false;try{hasLegacy=!!localStorage.getItem('mgp-v2')}catch{}
-  return `<section class="card profile-manager"><div class="profile-manager-heading"><h3>Tu cuenta</h3><p>${esc(S.profileName)} · ${esc(cloudUser?.email||'')}</p></div><p data-cloud-status role="status">${esc(cloudStatusText())}</p><p class="profile-help">Tus registros se guardan para esta cuenta. Entra con el mismo correo para abrirlos en otro dispositivo.</p><button class="btn secondary" data-cloud-sync ${cloudBusy?'disabled':''}>Sincronizar ahora</button>${'<div class="profile-storage-notice" data-cloud-conflict-ui '+(conflict?'':'hidden')+'><p>Hay cambios distintos en otro dispositivo. Conservamos tus cambios locales; descarga una copia antes de elegir la versión de la nube.</p><button class="btn secondary" data-cloud-export>Descargar mis cambios locales</button><button class="btn secondary" data-cloud-use-remote>Cargar la versión de la nube</button></div>'}${hasLegacy?'<div class="profile-import-legacy"><h4>Registros anteriores de este dispositivo</h4><p class="profile-help">No se añaden a ninguna cuenta automáticamente. Si son tuyos, puedes copiarlos a esta cuenta cuando aún no tenga registros. El original se conserva.</p><button class="btn secondary" data-cloud-import-local '+(cloudBusy?'disabled':'')+'>Importar mis registros anteriores</button></div>':''}<p class="food-error" role="alert">${esc(cloudError)}</p><button class="text-link" data-cloud-logout ${cloudBusy?'disabled':''}>Cerrar sesión</button><button class="btn secondary profile-share-btn" data-cloud-share>Compartir la app ${uiIcon('arrow')}</button><p id="cloudShareStatus" class="profile-help" role="status"></p></section>`;
+  const conflict=cloudStatus?.kind==='conflict';let hasLegacy=false;try{hasLegacy=!!deviceImportSource().raw}catch{}
+  return `<section class="card profile-manager"><div class="profile-manager-heading"><h3>Tu cuenta</h3><p>${esc(S.profileName)} · ${esc(cloudUser?.email||'')}</p></div><p data-cloud-status role="status">${esc(cloudStatusText())}</p><p class="profile-help">Tus registros se guardan para esta cuenta. Entra con el mismo correo para abrirlos en otro dispositivo.</p><button class="btn secondary" data-cloud-sync ${cloudBusy?'disabled':''}>Sincronizar ahora</button>${'<div class="profile-storage-notice" data-cloud-conflict-ui '+(conflict?'':'hidden')+'><p>Hay cambios distintos en otro dispositivo. Conservamos tus cambios locales; descarga una copia antes de elegir la versión de la nube.</p><button class="btn secondary" data-cloud-export>Descargar mis cambios locales</button><button class="btn secondary" data-cloud-use-remote>Cargar la versión de la nube</button></div>'}${hasLegacy?'<div class="profile-import-legacy"><h4>Perfil local de este dispositivo</h4><p class="profile-help">Puedes copiar el perfil local seleccionado a tu cuenta vacía. La confirmación muestra de quién son los registros. El original se conserva.</p><button class="btn secondary" data-cloud-import-local '+(cloudBusy?'disabled':'')+'>Importar mi perfil local</button></div>':''}<p class="food-error" role="alert">${esc(cloudError)}</p><button class="text-link" data-cloud-logout ${cloudBusy?'disabled':''}>Cerrar sesión</button><button class="btn secondary profile-share-btn" data-cloud-share>Compartir la app ${uiIcon('arrow')}</button><p id="cloudShareStatus" class="profile-help" role="status"></p></section>`;
  }
  return `<section class="card profile-manager"><div class="profile-manager-heading"><h3>${gate?'Abre tu cuenta':'Tu cuenta y tus registros'}</h3><p>Un correo y una contraseña para recuperar tus registros en otros dispositivos.</p></div>${configured?'':'<p class="profile-storage-notice">El servicio de cuentas todavía está pendiente de activar. Tus registros actuales siguen guardados en este dispositivo.</p>'}${cloudBusy?'<p role="status">Abriendo tus registros…</p>':''}<div class="cloud-auth-actions"><button class="btn secondary" data-cloud-auth="signin" ${!configured||cloudBusy?'disabled':''}>Iniciar sesión</button><button class="btn secondary" data-cloud-auth="signup" ${!configured||cloudBusy?'disabled':''}>Crear cuenta</button></div>${cloudAuthView&&!cloudBusy?cloudAccountForm():''}<p class="food-error" role="alert">${esc(cloudError)}</p><p class="profile-help" role="status">${esc(cloudFormMessage)}</p>${gate?'<button class="text-link" data-cloud-retry '+(!configured||cloudBusy?'disabled':'')+'>Reintentar conexión</button><button class="text-link" data-cloud-device '+(cloudBusy?'disabled':'')+'>Ver los registros de este dispositivo</button>':''}<p class="profile-help">Crear una cuenta no copia los datos anteriores del dispositivo. Cada usuario empieza con sus propios registros.</p></section>`;
 }
 function renderCloudGate(){
  if(cloudReplacing)return '<section class="card profile-manager" role="status"><h2>Actualizando tus registros</h2><p>Espera a que termine de cargar la versión de la nube.</p></section>';
- if(legacyLoadError&&!cloudMode)return `<div class="profile-storage-notice" role="alert"><h2>No pudimos abrir los registros del dispositivo</h2><p>No los hemos borrado ni reiniciado.</p><button class="btn" data-cloud-recovery>Descargar copia de recuperación</button><button class="btn secondary" data-cloud-reload>Volver a cargar</button></div>${renderCloudAccountCard({gate:true})}`;
+ if(legacyLoadError&&!cloudMode)return `<div class="profile-storage-notice" role="alert"><h2>No pudimos abrir los registros de este perfil</h2><p>No los hemos borrado ni reiniciado.</p><button class="btn" data-cloud-recovery>Descargar copia de recuperación</button><button class="btn secondary" data-cloud-reload>Volver a cargar</button></div>${renderDeviceProfilesCard()}${renderCloudAccountCard({gate:true})}`;
  return renderCloudAccountCard({gate:true});
 }
 function cloudPageBlocked(){return cloudReplacing||cloudMode&&!cloudReady||!cloudMode&&!!legacyLoadError}
@@ -146,7 +147,7 @@ function savePlannerState(){
   if(!cloudStatus?.saveFailed&&current&&plannerRecordsJSON(current)===plannerRecordsJSON(S))return;
   cloudController.save(S);
  }
- else localStorage.setItem('mgp-v2',JSON.stringify(S));
+ else saveDevicePlannerState(S);
 }
 function downloadPlannerJSON(value,filename){const url=URL.createObjectURL(new Blob([JSON.stringify(value,null,2)],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download=filename;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function exportPlannerAccount(){
@@ -154,15 +155,16 @@ function exportPlannerAccount(){
  downloadPlannerJSON(S,'mi-gym-planner-'+name+'-respaldo.json');
 }
 async function restorePlannerAccount(file){
- const destination=cloudMode?cloudUser?.id:'device',epoch=cloudAccountEpoch,controller=cloudController;
+ const destination=cloudMode?cloudUser?.id:deviceProfileIdentity(),epoch=cloudAccountEpoch,controller=cloudController;
  try{
   const data=JSON.parse(await file.text());
-  if(epoch!==cloudAccountEpoch||destination!==(cloudMode?cloudUser?.id:'device')||controller!==cloudController)throw Error('La cuenta cambió. Vuelve a elegir tu archivo.');
+  if(epoch!==cloudAccountEpoch||destination!==(cloudMode?cloudUser?.id:deviceProfileIdentity())||controller!==cloudController)throw Error('La cuenta cambió. Vuelve a elegir tu archivo.');
   if(!data||Array.isArray(data)||typeof data!=='object'||!data.done||Array.isArray(data.done)||typeof data.done!=='object'||!data.schedule||Array.isArray(data.schedule)||typeof data.schedule!=='object')throw Error('El archivo no es un respaldo válido de Mi Gym Planner.');
-  if(!confirm('¿Restaurar esta copia '+(cloudMode?'en la cuenta de '+cloudUser.email:'en este dispositivo')+'? Reemplazará sus registros; no cambia los de otros usuarios.'))return;
+  if(!confirm('¿Restaurar esta copia '+(cloudMode?'en la cuenta de '+cloudUser.email:'en el perfil de '+S.profileName+' de este dispositivo')+'? Reemplazará sus registros; no cambia los de otros usuarios.'))return;
   let candidate={...(cloudMode?freshCloudPlannerState(cloudUser):JSON.parse(JSON.stringify(defaults))),...data,...(cloudMode?{profileName:S.profileName}:{})};
   if(cloudMode)candidate=normalizeCloudPlannerState(candidate,cloudUser);
-  if(cloudMode)cloudController.save(candidate);else{if(legacyLoadError)throw Error('Conserva primero una copia de los datos que no se pueden abrir.');localStorage.setItem('mgp-v2',JSON.stringify(candidate))}
+  if(cloudMode)cloudController.save(candidate);else{if(legacyLoadError)throw Error('Conserva primero una copia de los datos que no se pueden abrir.');saveDevicePlannerState(candidate)}
+  if(!cloudMode){deviceSaveFailed=false;deviceProfileError=''}
   S=candidate;foodDrafts.clear();foodDraft={text:'',type:1};foodDraftDate='';foodNotice=null;render();
  }catch(error){cloudError=cloudErrorText(error);render()}
 }
@@ -171,12 +173,13 @@ async function importDeviceRecords(){
  const user=cloudUser,controller=cloudController,auth=cloudAuth,api=cloudApi,epoch=cloudAccountEpoch;
  const sameAccount=()=>epoch===cloudAccountEpoch&&cloudReady&&cloudUser?.id===user.id&&cloudController===controller;
  try{
-  assertNoPendingMealDrafts();const raw=localStorage.getItem('mgp-v2'),legacy=raw?JSON.parse(raw):null;
+  assertNoPendingMealDrafts();const source=deviceImportSource(),raw=source.raw,legacy=raw?JSON.parse(raw):null;
   if(!legacy||Array.isArray(legacy)||typeof legacy!=='object')throw Error('No hay registros anteriores válidos que importar.');
   cloudBusy=true;cloudError='';render();await controller.sync();if(!sameAccount())return;
   const token=await auth.getToken();if(!sameAccount())return;
   const remote=await api.readState(user.id,token);if(!sameAccount())return;
   if(cloudHasRecords(S)||remote&&cloudHasRecords(normalizeCloudPlannerState(remote.state,cloudUser)))throw Error('Esta cuenta ya tiene registros. Exporta una copia antes de reemplazarlos mediante Restaurar una copia. No se ha importado nada.');
+  if(localStorage.getItem(source.key)!==raw)throw Error('El perfil local cambió mientras se preparaba la importación. Vuelve a intentarlo para copiar su versión actual.');
   if(!confirm('¿Copiar los registros de '+String(legacy.profileName||'Giancarlo')+' de este dispositivo a la cuenta '+user.email+'? El original del dispositivo se conserva.'))return;
   const candidate=normalizeCloudPlannerState({...freshCloudPlannerState(user),...legacy,profileName:S.profileName,tab:'mas'},user);
   controller.save(candidate);S=candidate;await controller.sync();
@@ -212,7 +215,7 @@ async function sharePlannerApp(){
 }
 function exportPlannerRecovery(){
  const records={};
- if(!cloudMode){const raw=localStorage.getItem('mgp-v2');if(raw!==null)records['mgp-v2']=raw}
+ if(!cloudMode){const key=ensureDeviceProfiles().keyFor(deviceProfileIdentity()),raw=localStorage.getItem(key);if(raw!==null)records[key]=raw}
  else if(cloudUser&&cloudAuth?.currentUser()?.id===cloudUser.id){const key='mgp-cloud-v1:'+cloudProjectId()+':'+cloudUser.id;for(let index=0;index<localStorage.length;index++){const name=localStorage.key(index);if(name===key||name?.startsWith(key+':recovery:'))records[name]=localStorage.getItem(name)}}
  downloadPlannerJSON({format:'mi-gym-planner-recovery',records},'mi-gym-planner-recuperacion.json');
 }
@@ -220,7 +223,7 @@ function attachCloudAccounts(){
  document.addEventListener('submit',event=>{if(event.target.id==='cloudAuthForm'){event.preventDefault();submitCloudAuth(event.target)}});
  document.addEventListener('click',event=>{
   const auth=event.target.closest('[data-cloud-auth]');if(auth&&!auth.disabled){cloudAuthView=auth.dataset.cloudAuth;cloudError='';render();return}
-  if(event.target.closest('[data-cloud-sync]'))syncPlannerAccount();
+  if(event.target.closest('[data-cloud-sync]')){if(cloudMode)syncPlannerAccount();else retryDevicePlannerSave()}
   if(event.target.closest('[data-cloud-logout]'))logoutPlannerAccount();
   if(event.target.closest('[data-cloud-import-local]'))importDeviceRecords();
   if(event.target.closest('[data-cloud-export]'))exportPlannerAccount();
@@ -233,10 +236,11 @@ function attachCloudAccounts(){
  });
  for(const type of ['input','change','submit','click'])document.addEventListener(type,event=>{
   if(!cloudPageBlocked())return;
+  if(!cloudMode&&event.target.closest('#deviceProfileForm,[data-device-profile]'))return;
   if(event.target.closest('#cloudAuthForm,[data-cloud-auth],[data-cloud-retry],[data-cloud-device],[data-cloud-recovery],[data-cloud-reload]'))return;
   event.preventDefault();event.stopImmediatePropagation();
  },true);
  window.addEventListener('online',()=>{if(cloudReady&&!cloudFieldFocused()&&!pendingMealDrafts())syncPlannerAccount()});
- window.addEventListener('beforeunload',event=>{if(cloudReady&&cloudStatus?.saveFailed){event.preventDefault();event.returnValue=''}});
+ window.addEventListener('beforeunload',event=>{if(cloudMode?cloudReady&&cloudStatus?.saveFailed:deviceSaveFailed){event.preventDefault();event.returnValue=''}});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&cloudReady&&!cloudFieldFocused()&&!pendingMealDrafts())syncPlannerAccount()});
 }

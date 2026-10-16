@@ -15,7 +15,7 @@ Tus datos anteriores están en el navegador donde los registraste. La configurac
 ## 2. Crea el proyecto de Supabase
 
 1. Entra en [supabase.com/dashboard](https://supabase.com/dashboard) con tu propia cuenta.
-2. Crea un **proyecto nuevo** para Mi Gym Planner. Elige un nombre, una región cercana y una contraseña para la base de datos. Guarda esa contraseña en privado; no se coloca en la app.
+2. Usa tu cuenta personal y crea una **organización y un proyecto nuevos**, exclusivos para Mi Gym Planner. No reutilices organizaciones, proyectos, repositorios ni credenciales del trabajo. Elige un nombre, una región cercana y una contraseña para la base de datos. Guarda esa contraseña en privado; no se coloca en la app.
 3. Espera a que el proyecto termine de prepararse.
 4. En **Authentication → Sign In / Providers**, activa el proveedor **Email** y permite crear usuarios con correo y contraseña. Mantén activada la confirmación del correo.
 5. En **Authentication → URL Configuration**, configura:
@@ -60,10 +60,10 @@ Publica los archivos revisados mediante la solicitud de cambio y el despliegue d
 
 ## 5. Abre tu cuenta y copia tus registros anteriores
 
-1. En el dispositivo donde están tus registros de Giancarlo, abre la app actualizada y entra en **Más → Crear cuenta**.
+1. En el dispositivo donde están tus registros de Giancarlo, abre la app actualizada. Si utilizas perfiles locales, selecciona primero el tuyo en **Más → Usuarios de este dispositivo**. Después entra en **Más → Crear cuenta**.
 2. Escribe tu nombre, correo y contraseña. Abre el correo de confirmación de Supabase y confirma la cuenta; después vuelve a la app e inicia sesión con tu contraseña.
 3. Espera a que termine la lectura de la cuenta. Crear una cuenta no importa los datos del dispositivo automáticamente.
-4. Si los registros anteriores de este dispositivo son tuyos, usa **Importar mis registros anteriores** y revisa el correo de destino en la confirmación. La importación solo se permite si la cuenta aún no tiene registros y la lectura remota terminó correctamente.
+4. Si los registros del perfil local seleccionado son tuyos, usa **Importar mi perfil local** y revisa el nombre de origen y el correo de destino en la confirmación. La importación solo se permite si la cuenta aún no tiene registros y la lectura remota terminó correctamente.
 5. Comprueba tus pesos, repeticiones, comidas, marcas y días cerrados. Espera a que el estado indique que los cambios están sincronizados.
 
 El original `mgp-v2` permanece en el navegador. No se mueve ni se borra al importar o cerrar sesión. Si la cuenta ya tiene registros, no se sustituyen mediante esta importación. Para reemplazar datos deliberadamente, conserva antes una copia y utiliza **Restaurar una copia**, comprobando qué cuenta está abierta.
