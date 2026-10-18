@@ -166,7 +166,7 @@ Publicar también `device-profiles.js`. Prueba sin red ni navegador: `node tests
 
 ## Cuentas y sincronización
 
-La integración de cuentas está preparada, pero no está activada: `cloud-config.js` conserva URL y clave pública vacías hasta configurar el proyecto. La guía [CUENTAS_Y_SINCRONIZACION.md](docs/CUENTAS_Y_SINCRONIZACION.md) explica crear Supabase, confirmar correos, ejecutar la migración y las pruebas SQL, configurar la URL de GitHub Pages y publicar. Nunca se incluye una clave secreta o `service_role` en el frontend. No se ha provisionado ni probado un backend real.
+Las cuentas se conectan al proyecto Supabase nuevo y exclusivo de Mi Gym Planner. `cloud-config.js` contiene únicamente su URL y clave pública; nunca una clave secreta, token de administración o `service_role`. Están habilitados Email, el registro directo y la Site URL de GitHub Pages. El registro no envía confirmación de correo mientras no hay SMTP configurado; las direcciones no quedan verificadas. La migración y las pruebas SQL reales de RLS, separación entre cuentas y revisiones pasaron. La guía [CUENTAS_Y_SINCRONIZACION.md](docs/CUENTAS_Y_SINCRONIZACION.md) explica el uso, la importación y las comprobaciones pendientes.
 
 Más incluye Crear cuenta e Iniciar sesión. Tras autenticar y verificar la identidad, cada cuenta usa su UUID, una fila privada y una caché local propia. Las actualizaciones usan revisiones para detectar conflictos entre dispositivos. El estado distingue guardado local pendiente, sincronización y conflicto; una respuesta fallida no se interpreta como una cuenta vacía. Los cambios hechos mientras sube una versión siguen pendientes para la siguiente subida. Volver a la app puede cargar cambios remotos si no hay borradores de comidas sin enviar.
 
@@ -184,3 +184,5 @@ node tests/cloud-accounts-smoke.cjs
 ```
 
 Estas pruebas usan respuestas simuladas. La seguridad RLS y el flujo real de correo/sincronización requieren ejecutar [rls.sql](supabase/tests/rls.sql) y la comprobación entre cuentas y dispositivos de la guía. Las pruebas de navegador siguen necesitando el servidor y Chromium descritos al principio.
+
+Validación de la activación (18 de octubre de 2026): `node tests/cloud-browser-smoke.cjs` verifica en Chromium el registro, el nombre propio, el legado intacto, el guardado, la segunda sesión y dos cuentas separadas usando Auth/REST simulados. Las pruebas SQL sí se ejecutaron contra Supabase real. La prueba HTTP directa de Auth/REST queda pendiente: el proxy de Codex responde «Domain forbidden» para el dominio del proyecto, aunque figure permitido en la configuración publicada. No se ha verificado el flujo con cuentas reales desde un iPhone físico; completa las comprobaciones de la guía antes de dar por validada esa experiencia.

@@ -1,8 +1,8 @@
-# Activar las cuentas de Mi Gym Planner
+# Cuentas y sincronización de Mi Gym Planner
 
 Cada persona podrá crear su cuenta con correo y contraseña. Sus comidas, pesos, ejercicios y días cerrados se guardarán separados, y podrá recuperarlos al iniciar sesión en otro dispositivo.
 
-El código prepara esta conexión, pero **las cuentas no están activadas todavía**. Falta disponer de un proyecto de Supabase, ejecutar su configuración y colocar su URL y clave pública. No se han creado cuentas ni un proyecto, ni se ha verificado una conexión real. La publicación de estos cambios en GitHub Pages también está pendiente del acceso necesario.
+La app se conecta al proyecto nuevo y exclusivo `hvohwgtlvqvonvtcrpfw`. Email y el registro directo están habilitados, con Site URL de GitHub Pages. La migración y las pruebas SQL reales de aislamiento pasaron. También se verificó la interfaz de registro, dos cuentas y una segunda sesión en Chromium con Auth/REST simulados. **La prueba de registro y sincronización reales por HTTPS desde este entorno sigue bloqueada por el proxy de Codex**, que rechaza el dominio del proyecto aunque figure permitido en la configuración publicada. Completa la comprobación en dispositivos indicada al final. No se ha utilizado ningún recurso del trabajo.
 
 Mientras `cloud-config.js` esté vacío, la app conserva el guardado anterior en el dispositivo. Los botones de cuentas permanecen desactivados; no simulan cuentas o sincronización.
 
@@ -17,7 +17,7 @@ Tus datos anteriores están en el navegador donde los registraste. La configurac
 1. Entra en [supabase.com/dashboard](https://supabase.com/dashboard) con tu propia cuenta.
 2. Usa tu cuenta personal y crea una **organización y un proyecto nuevos**, exclusivos para Mi Gym Planner. No reutilices organizaciones, proyectos, repositorios ni credenciales del trabajo. Elige un nombre, una región cercana y una contraseña para la base de datos. Guarda esa contraseña en privado; no se coloca en la app.
 3. Espera a que el proyecto termine de prepararse.
-4. En **Authentication → Sign In / Providers**, activa el proveedor **Email** y permite crear usuarios con correo y contraseña. Mantén activada la confirmación del correo.
+4. En **Authentication → Sign In / Providers**, activa el proveedor **Email** y permite crear usuarios con correo y contraseña. Para el registro directo actual, deja **Confirm email desactivado** en la sección User Signups. El proyecto no tiene SMTP personalizado: no se envían correos de confirmación. Si posteriormente quieres verificar las direcciones, configura primero el envío de correos y después activa esa opción.
 5. En **Authentication → URL Configuration**, configura:
 
    - **Site URL:** `https://gnncrlo.github.io/mi-gym-planner/`
@@ -37,7 +37,7 @@ Después, en otra consulta del SQL Editor, ejecuta **todo** el contenido de [rls
 
 El archivo empieza una transacción y termina en `ROLLBACK`: los usuarios y registros ficticios no se conservan. No sustituyas sus identificadores por usuarios reales ni ejecutes fragmentos aislados. El resultado esperado es un mensaje `PASS`. Un error significa que hay que revisar la configuración antes de activar las cuentas.
 
-**Estas pruebas SQL están preparadas, pero no se han ejecutado contra un proyecto de Supabase.** Tampoco prueban el envío de correos ni la experiencia en un iPhone.
+**Estas pruebas SQL se ejecutaron correctamente en el proyecto nuevo el 18 de octubre de 2026**, incluidos los rechazos entre cuentas y de visitantes sin sesión, las revisiones y el rollback. No sustituyen las pruebas de Auth/REST por HTTPS ni la experiencia en un iPhone físico.
 
 ## 4. Coloca la configuración pública en la app
 
@@ -61,7 +61,7 @@ Publica los archivos revisados mediante la solicitud de cambio y el despliegue d
 ## 5. Abre tu cuenta y copia tus registros anteriores
 
 1. En el dispositivo donde están tus registros de Giancarlo, abre la app actualizada. Si utilizas perfiles locales, selecciona primero el tuyo en **Más → Usuarios de este dispositivo**. Después entra en **Más → Crear cuenta**.
-2. Escribe tu nombre, correo y contraseña. Abre el correo de confirmación de Supabase y confirma la cuenta; después vuelve a la app e inicia sesión con tu contraseña.
+2. Escribe tu nombre, correo y contraseña de al menos ocho caracteres. El registro directo abre tu cuenta sin enviar una confirmación por correo; la dirección no queda verificada. Si ya tienes cuenta, utiliza Iniciar sesión.
 3. Espera a que termine la lectura de la cuenta. Crear una cuenta no importa los datos del dispositivo automáticamente.
 4. Si los registros del perfil local seleccionado son tuyos, usa **Importar mi perfil local** y revisa el nombre de origen y el correo de destino en la confirmación. La importación solo se permite si la cuenta aún no tiene registros y la lectura remota terminó correctamente.
 5. Comprueba tus pesos, repeticiones, comidas, marcas y días cerrados. Espera a que el estado indique que los cambios están sincronizados.
@@ -84,11 +84,11 @@ Si editas la misma cuenta desde dos dispositivos, pueden aparecer versiones dist
 
 Esta revisión necesita cuentas de prueba reales y dos dispositivos; las pruebas locales con respuestas simuladas no la sustituyen.
 
-1. Crea dos cuentas con correos diferentes y confirma ambos. Comprueba que cada una empieza sin los datos de Giancarlo y que al cambiar de cuenta no aparecen comidas o pesos ajenos.
+1. Crea dos cuentas con correos diferentes mediante el registro directo. Comprueba que cada una empieza sin los datos de Giancarlo y que al cambiar de cuenta no aparecen comidas o pesos ajenos.
 2. En la primera cuenta, guarda una comida, una carga, sus repeticiones y un día cerrado. Abre esa misma cuenta en el segundo dispositivo y comprueba que aparecen después de sincronizar.
 3. Entra con la segunda cuenta y confirma que no ve esos registros.
 4. Guarda un cambio con la conexión interrumpida y comprueba que permanece al recuperar la sesión y se sube al reconectar.
 5. Edita la primera cuenta desde ambos dispositivos para comprobar el aviso de conflicto y la descarga de respaldo antes de cargar otra versión.
-6. Comprueba la confirmación de correo, el cierre de sesión y el inicio posterior desde el acceso directo del iPhone.
+6. Comprueba el registro directo, el cierre de sesión y el inicio posterior desde el acceso directo del iPhone. Si más adelante se habilita la confirmación, prueba también su envío con el SMTP configurado.
 
-Hasta completar la configuración y estas comprobaciones no debe anunciarse que las cuentas están activadas o que la sincronización real ha sido validada.
+Las pruebas SQL y las simulaciones de la interfaz no dan por validado el registro y la sincronización reales. Las comprobaciones anteriores en dispositivos siguen pendientes y deben registrarse antes de considerar terminada esa validación.
