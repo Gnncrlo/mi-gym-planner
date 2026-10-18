@@ -166,7 +166,7 @@ Publicar también `device-profiles.js`. Prueba sin red ni navegador: `node tests
 
 ## Cuentas y sincronización
 
-La integración de cuentas está preparada, pero no está activada: `cloud-config.js` conserva URL y clave pública vacías hasta configurar el proyecto. La guía [CUENTAS_Y_SINCRONIZACION.md](docs/CUENTAS_Y_SINCRONIZACION.md) explica crear Supabase, confirmar correos, ejecutar la migración y las pruebas SQL, configurar la URL de GitHub Pages y publicar. Nunca se incluye una clave secreta o `service_role` en el frontend. No se ha provisionado ni probado un backend real.
+La conexión apunta al proyecto Supabase nuevo y exclusivo de Mi Gym Planner. `cloud-config.js` contiene únicamente su URL y clave pública; nunca una clave secreta, token de administración o `service_role`. La migración y las pruebas SQL reales de RLS, separación entre cuentas y revisiones ya pasaron. La activación pública sigue pendiente de completar las URLs y las pruebas de Auth/REST por HTTPS. La guía [CUENTAS_Y_SINCRONIZACION.md](docs/CUENTAS_Y_SINCRONIZACION.md) describe la configuración y el despliegue. El registro directo no envía confirmación de correo mientras no hay SMTP configurado; las direcciones no quedan verificadas.
 
 Más incluye Crear cuenta e Iniciar sesión. Tras autenticar y verificar la identidad, cada cuenta usa su UUID, una fila privada y una caché local propia. Las actualizaciones usan revisiones para detectar conflictos entre dispositivos. El estado distingue guardado local pendiente, sincronización y conflicto; una respuesta fallida no se interpreta como una cuenta vacía. Los cambios hechos mientras sube una versión siguen pendientes para la siguiente subida. Volver a la app puede cargar cambios remotos si no hay borradores de comidas sin enviar.
 
