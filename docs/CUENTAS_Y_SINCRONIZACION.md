@@ -1,8 +1,8 @@
-# Activar las cuentas de Mi Gym Planner
+# Cuentas y sincronización de Mi Gym Planner
 
 Cada persona podrá crear su cuenta con correo y contraseña. Sus comidas, pesos, ejercicios y días cerrados se guardarán separados, y podrá recuperarlos al iniciar sesión en otro dispositivo.
 
-La conexión está configurada para el proyecto nuevo y exclusivo `hvohwgtlvqvonvtcrpfw`. La migración y las pruebas SQL reales de aislamiento ya pasaron. **La activación en la app publicada sigue pendiente** de completar la configuración de URLs, aplicar al entorno el dominio del proyecto y terminar las pruebas HTTPS de registro y sincronización antes del despliegue. No se ha utilizado ningún recurso del trabajo.
+La app se conecta al proyecto nuevo y exclusivo `hvohwgtlvqvonvtcrpfw`. Email y el registro directo están habilitados, con Site URL de GitHub Pages. La migración y las pruebas SQL reales de aislamiento pasaron. También se verificó la interfaz de registro, dos cuentas y una segunda sesión en Chromium con Auth/REST simulados. **La prueba de registro y sincronización reales por HTTPS desde este entorno sigue bloqueada por el proxy de Codex**, que rechaza el dominio del proyecto aunque figure permitido en la configuración publicada. Completa la comprobación en dispositivos indicada al final. No se ha utilizado ningún recurso del trabajo.
 
 Mientras `cloud-config.js` esté vacío, la app conserva el guardado anterior en el dispositivo. Los botones de cuentas permanecen desactivados; no simulan cuentas o sincronización.
 
@@ -91,4 +91,4 @@ Esta revisión necesita cuentas de prueba reales y dos dispositivos; las pruebas
 5. Edita la primera cuenta desde ambos dispositivos para comprobar el aviso de conflicto y la descarga de respaldo antes de cargar otra versión.
 6. Comprueba el registro directo, el cierre de sesión y el inicio posterior desde el acceso directo del iPhone. Si más adelante se habilita la confirmación, prueba también su envío con el SMTP configurado.
 
-Hasta completar la configuración y estas comprobaciones no debe anunciarse que las cuentas están activadas o que la sincronización real ha sido validada.
+Las pruebas SQL y las simulaciones de la interfaz no dan por validado el registro y la sincronización reales. Las comprobaciones anteriores en dispositivos siguen pendientes y deben registrarse antes de considerar terminada esa validación.
