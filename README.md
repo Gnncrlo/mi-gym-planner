@@ -15,7 +15,7 @@ python3 -m http.server 8000 --bind 127.0.0.1
 
 Toca el nombre de un ejercicio en Rutinas para ver fotografías de personas reales en dos posiciones, técnica, músculos, errores y tres alternativas. La variante se aplica solo a esa semana, día y posición. Puedes volver al ejercicio original desde la ficha.
 
-La clave de almacenamiento sigue siendo `mgp-v2`. Solo se añade `substitutions`; las claves de cargas, repeticiones, completados, hábitos y peso no cambian. Cambiar de variante conserva la carga como referencia: ajústala al nuevo equipo. Los respaldos anteriores siguen siendo compatibles y los nuevos incluyen las sustituciones.
+El modo de guardado en el dispositivo conserva la clave `mgp-v2`. Las cuentas usan una caché separada por proyecto y UUID, como se describe en Cuentas y sincronización. Solo se añade `substitutions`; las claves de cargas, repeticiones, completados, hábitos y peso no cambian. Cambiar de variante conserva la carga como referencia: ajústala al nuevo equipo. Los respaldos anteriores siguen siendo compatibles y los nuevos incluyen las sustituciones.
 
 ## Verificación
 
@@ -35,7 +35,7 @@ Publica también `exercise-photos.js` y la carpeta `assets/exercises/`.
 
 ## Interfaz y bienvenida
 
-La bienvenida utiliza `profileName` en el objeto existente `mgp-v2`, con Giancarlo como nombre inicial. Se puede cambiar desde Más → Tu perfil y se incluye en los respaldos. No cambia las claves ni los registros anteriores. `design.css` aplica el diseño oscuro y azul a todas las secciones; se publica junto con los otros archivos.
+La bienvenida utiliza `profileName` del usuario abierto. Los registros anteriores de Giancarlo conservan su nombre; un dispositivo nuevo empieza con «Mi perfil» y sin una medición de peso inventada. Una cuenta nueva usa su propio nombre y empieza vacía. Se puede cambiar desde Más → Tu perfil y se incluye en los respaldos. No cambia las claves ni los registros anteriores. `design.css` aplica el diseño oscuro y azul a todas las secciones; se publica junto con los otros archivos.
 
 Prueba adicional de la interfaz: `node tests/interface-smoke.cjs` (mismos requisitos que la prueba de fichas). Verifica nombre y persistencia, registros de actividad y peso, agua y navegación a 320, 375, 390 y 1024 px.
 
@@ -43,17 +43,35 @@ Prueba adicional de la interfaz: `node tests/interface-smoke.cjs` (mismos requis
 
 Inicio muestra tres recomendaciones locales: movimiento según el día real de la semana, hidratación según el agua registrada hoy y descanso o una idea que cambia cada día. El sueño ausente se distingue de cero horas registradas. Una sesión completada invita a recuperarse; un descanso corto invita a reducir intensidad si hay cansancio. La referencia de agua de la app no es una prescripción personalizada.
 
-Las tarjetas se recalculan al abrir Inicio y al volver a la app. Sus botones abren la sección correspondiente en la fecha de hoy, aunque antes se consultara otra fecha o rutina. Se usa la fecha local del dispositivo. No se migran, eliminan ni reescriben registros anteriores para generar recomendaciones, y no se envían datos a servicios externos.
+Las tarjetas se recalculan al abrir Inicio y al volver a la app. Sus botones abren la sección correspondiente en la fecha de hoy, aunque antes se consultara otra fecha o rutina. Se usa la fecha local del dispositivo. No se migran, eliminan ni reescriben registros anteriores para generar recomendaciones. Se calculan en el dispositivo; las cuentas sincronizan sus registros con el proyecto configurado.
 
 Publicar también `recommendations.js`. Prueba de escenarios: `node tests/recommendations-smoke.cjs`, con los mismos requisitos y variables de las otras pruebas.
 
 ## Comidas
 
-La navegación reemplaza Hábitos por Comidas. El diario permite describir ingredientes, preparación y hambre/saciedad, recibir sugerencias generales y añadir detalles a un registro existente. Las ideas de desayuno, almuerzo, cena y snack cambian según la fecha. Las sugerencias se calculan con las palabras de la descripción; no reconocen fotos, no son un chat con un modelo de IA ni estiman calorías o cantidades. No se envían los registros a un servidor.
+La navegación reemplaza Hábitos por Comidas. Hay 40 ideas: diez desayunos, diez almuerzos, diez cenas y diez snacks de media mañana o tarde. Cada receta muestra ingredientes, preparación y tiempo aproximado; cuando usa ingredientes ya cocidos o preparados, lo indica. Puedes filtrar por rápidas (hasta 15 minutos), económicas, vegetarianas, sin cocinar o para llevar. El orden cambia según la fecha y «Ver otras opciones» recorre las alternativas.
+
+Comidas se organiza en apartados plegables de Desayuno, Almuerzo y Cena, más Snack opcional. Cada uno incluye una idea para la fecha elegida con ingredientes y preparación, la marca de comida realizada, el formulario y los registros con recomendaciones de qué agregar o mejorar. La idea diaria es estable para esa fecha y comida: no cambia al explorar filtros u otras recetas. «Más opciones» abre las alternativas dentro del mismo apartado.
+
+Abrir un apartado elige su formulario sin guardar ni reclasificar otros registros. Los borradores quedan separados en memoria por fecha y tipo de comida al plegar, cambiar de apartado, consultar recetas o cambiar de fecha; se guardan en el diario al enviar el formulario. Las marcas usan los campos existentes `meals` y `tasks` de Mi Día; el snack no entra en el contador de tres comidas principales. Quitar una marca conserva todas las descripciones. Guardar una descripción nueva marca esa comida y su actividad correspondiente en la misma operación. Editar un registro conserva su tipo, su fecha y sus marcas, incluso si lo habías desmarcado. Un fallo de almacenamiento restaura conjuntamente el diario y las marcas; los días cerrados mantienen su copia y sus controles bloqueados. Los registros anteriores se consultan sin migraciones ni marcado automático al abrir la app.
+
+«Describir mi plato» lleva al diario y conserva cualquier texto que ya estuvieras escribiendo. Elegir una receta solo deja una referencia temporal: no registra ingredientes consumidos, no marca comidas y no guarda preferencias. Para registrar lo que realmente comiste, escribe tu descripción y pulsa «Guardar y recibir sugerencias». Los días cerrados permiten consultar recetas y conservan bloqueado su diario.
+
+El diario permite describir ingredientes, preparación y hambre/saciedad, recibir sugerencias concretas para cada tipo de comida y añadir detalles a un registro existente. Por ejemplo, pan con café en el desayuno propone opciones de proteína y fruta; arroz con pollo ofrece verduras para acompañar; un snack de fruta puede complementarse de forma opcional. Reconoce más ingredientes habituales en Perú y distingue negaciones, bebidas vegetales y saciedad. Las sugerencias se calculan localmente con las palabras de la descripción; no reconocen fotos, no son un chat con un modelo de IA ni estiman calorías o cantidades. En el modo de dispositivo no se envían registros a un servidor. Si usas una cuenta, sus registros se sincronizan con el proyecto configurado; las sugerencias siguen calculándose en el dispositivo.
 
 `foodLog` se añade a `mgp-v2` y se incluye en exportación/restauración. Los datos anteriores de alimentos (`meals`), agua y sueño se conservan. Agua y descanso está en Más; las recomendaciones de Inicio enlazan allí cuando corresponde. El identificador anterior `habitos` sigue funcionando como alias de Comidas. Si no hay espacio para guardar una comida, se conserva el diario anterior y se muestra un error.
 
-Publicar también `nutrition.js`. Prueba: `node tests/foods-smoke.cjs`, con los mismos requisitos que las otras pruebas. Incluye diario, edición, negaciones en ingredientes, hambre/saciedad, preservación de datos anteriores, respaldos, HTML escapado y fallo de almacenamiento.
+Publicar también `nutrition.js`, `meal-advice.js`, `meal-ideas.js`, `meal-explorer.js` y `design.css` junto a `index.html`. Se conserva el formato de `foodLog` y la clave `mgp-v2`; las nuevas ideas no requieren migrar datos.
+
+Pruebas de lógica sin servidor ni navegador:
+
+```sh
+node tests/meal-advice-smoke.cjs
+node tests/meal-ideas-smoke.cjs
+node tests/meal-flows-smoke.cjs
+```
+
+Comprueban ingredientes, negaciones, hambre/saciedad, variedad y filtros, navegación sin guardar, plegado y borradores separados por comida/fecha, ideas diarias independientes de filtros, marcas persistentes por fecha, sincronización con Mi Día, una sola escritura por operación, edición sin remarcar, fallo de almacenamiento y protección de la fecha original de una comida cerrada. Las pruebas de eventos incluyen el manejador general de cambios de `index.html` y usan un documento simulado: no verifican diseño ni comportamiento real de iOS. Para la integración en navegador: `node tests/foods-smoke.cjs` y `node tests/meal-recovery-smoke.cjs`, con los mismos requisitos que las otras pruebas. Incluyen diario, edición, preservación de datos anteriores, respaldos, HTML escapado y fallo de almacenamiento.
 
 ## Configuración
 
@@ -108,7 +126,7 @@ Las marcas de desayuno, almuerzo y cena se comparten con Comidas mediante `meals
 
 El calendario muestra el mes completo, porcentajes, marcas de gimnasio y días cerrados con una leyenda. Seleccionar una fecha mantiene el calendario y acerca su detalle; Volver al mes regresa a la cuadrícula. El detalle permite abrir Mi Día, la rutina de la semana archivada correcta o el resumen guardado. Navegar el calendario no cambia registros ni guarda datos.
 
-Comidas permite registrar desayuno tardío u omitido por trabajo o falta de tiempo en `mealAdjustments`, sin cambiar automáticamente las marcas de comidas. Las ideas distinguen registros pendientes de comidas omitidas explícitamente y usan sólo los ingredientes escritos. Los cierres guardan la visita y la nota de desayuno en `gymVisit` y `mealAdjustment`, y bloquean los nuevos controles hasta reabrir el día.
+El bloque de horario del desayuno se retiró de Comidas. Las notas anteriores de desayuno tardío u omitido permanecen en `mealAdjustments`, en los respaldos y en los cierres (`mealAdjustment`); no se borran ni se migran. Los cierres siguen conservando también la visita al gimnasio y bloquean los registros de comida hasta reabrir el día.
 
 La bienvenida destaca el nombre y una frase propia de disciplina que cambia según la fecha local del dispositivo; la misma frase aparece en Inicio. Conserva la transición suave y respeta movimiento reducido. La entrada automática da tiempo para ver el saludo y el botón permite continuar al momento.
 
@@ -132,3 +150,37 @@ Las fichas conservan las fotos originales de personas haciendo el ejercicio en d
 Las zonas son orientativas y no representan porcentajes de activación o aislamiento. Los músculos que quedan ocultos por ropa, postura o banco se explican con el mapa separado, sin pintar regiones inventadas sobre la fotografía de técnica. El sóleo se identifica como profundo. El fondo incorpora luces azules, una cuadrícula tenue y líneas diagonales estáticas, sin animaciones de fondo ni conexiones externas.
 
 Publicar `muscle-atlas.js` y `assets/anatomy/muscle-atlas.png`. Prueba: `node tests/muscle-atlas-smoke.cjs`; cubre los 79 mapas, variantes que cambian de músculo, vistas, controles, técnica original, foco, conservación de registros y móvil.
+
+
+## Usuarios de este dispositivo
+
+En **Más → Usuarios de este dispositivo**, crea un perfil con el nombre de otra persona o vuelve a abrir uno existente. Cada perfil guarda por separado pesos, cargas, repeticiones, comidas, actividades y días cerrados. La bienvenida usa el nombre del perfil abierto. Los perfiles nuevos empiezan sin registros de Giancarlo.
+
+El perfil original conserva `mgp-v2` sin mover ni importar sus registros. Los nuevos usan `mgp-device-profile-v1:<UUID>`. El nombre se puede modificar sin cambiar el identificador. Cada pestaña queda ligada a su propio perfil; elegir otro usuario en una pestaña no redirige los guardados de las demás. Una edición antigua de la misma persona desde otra pestaña se rechaza para conservar la copia más reciente.
+
+El cambio de usuario recarga la app para limpiar formularios, diálogos y temporizadores. Los borradores de comidas deben guardarse o vaciarse antes de cambiar. Un fallo de almacenamiento conserva la copia anterior, mantiene las ediciones visibles y ofrece exportación y reintento. Los respaldos y su restauración corresponden al perfil abierto; una lectura de archivo tardía no puede reemplazar al usuario siguiente.
+
+Son perfiles locales, accesibles para quienes compartan ese navegador, sin contraseñas ni sincronización entre teléfonos. Compartir la URL no envía registros. Las cuentas autenticadas siguen siendo una opción independiente, pendiente de configurar Supabase. Su importación explícita utiliza el perfil local seleccionado y comprueba su nombre en la confirmación.
+
+Publicar también `device-profiles.js`. Prueba sin red ni navegador: `node tests/device-profiles-smoke.cjs`; cubre aislamiento, reapertura, datos anteriores intactos, perfiles con el mismo nombre, pestañas, cuota, reintento, respaldos, restauración tardía y recuperación sin reinicios. La comprobación visual en iPhone permanece pendiente.
+
+## Cuentas y sincronización
+
+La integración de cuentas está preparada, pero no está activada: `cloud-config.js` conserva URL y clave pública vacías hasta configurar el proyecto. La guía [CUENTAS_Y_SINCRONIZACION.md](docs/CUENTAS_Y_SINCRONIZACION.md) explica crear Supabase, confirmar correos, ejecutar la migración y las pruebas SQL, configurar la URL de GitHub Pages y publicar. Nunca se incluye una clave secreta o `service_role` en el frontend. No se ha provisionado ni probado un backend real.
+
+Más incluye Crear cuenta e Iniciar sesión. Tras autenticar y verificar la identidad, cada cuenta usa su UUID, una fila privada y una caché local propia. Las actualizaciones usan revisiones para detectar conflictos entre dispositivos. El estado distingue guardado local pendiente, sincronización y conflicto; una respuesta fallida no se interpreta como una cuenta vacía. Los cambios hechos mientras sube una versión siguen pendientes para la siguiente subida. Volver a la app puede cargar cambios remotos si no hay borradores de comidas sin enviar.
+
+`mgp-v2` no se sube automáticamente ni se borra al entrar o salir de una cuenta. La importación requiere una acción y confirmación explícitas, una lectura remota correcta y una cuenta sin registros. Se conserva el nombre de la cuenta y el original del dispositivo. Cada persona debe crear su propia cuenta; compartir el enlace no comparte registros. Los respaldos normales incluyen únicamente el usuario abierto. Restaurar una copia guarda primero el candidato y después cambia el estado visible, conservando los otros usuarios.
+
+Cerrar sesión invalida el controlador de sincronización y recarga la interfaz, limpiando formularios, temporizadores y diálogos. Las cachés pendientes se conservan para el mismo UUID. No se cambia de cuenta mientras haya borradores de comidas sin enviar. Si falla un guardado local, se avisa y pausa la sincronización hasta reintentar; los cambios en memoria se pueden exportar. Se validan los registros remotos antes de reemplazar una caché válida. Si hay conflicto, primero se puede descargar la copia local; cargar la versión de la nube conserva además una copia de recuperación y bloquea las ediciones mientras termina.
+
+Pruebas locales sin red ni navegador:
+
+```sh
+node tests/cloud-api-smoke.cjs
+node tests/cloud-auth-smoke.cjs
+node tests/cloud-sync-smoke.cjs
+node tests/cloud-accounts-smoke.cjs
+```
+
+Estas pruebas usan respuestas simuladas. La seguridad RLS y el flujo real de correo/sincronización requieren ejecutar [rls.sql](supabase/tests/rls.sql) y la comprobación entre cuentas y dispositivos de la guía. Las pruebas de navegador siguen necesitando el servidor y Chromium descritos al principio.
