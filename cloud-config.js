@@ -1,6 +1,5 @@
-// Public Supabase project settings. Never put a secret/service_role key here.
-// Complete the setup in docs/CUENTAS_Y_SINCRONIZACION.md before enabling accounts.
+// Public project settings only. Never add a management token or service_role key.
 const GYM_CLOUD_CONFIG=Object.freeze({
- url:'',
- publishableKey:''
+ "url": "https://hvohwgtlvqvonvtcrpfw.supabase.co",
+ "publishableKey": "sb_publishable_mZyzW03VJ09kSpiX_SVwsg_Wpkv92Qu"
 });
