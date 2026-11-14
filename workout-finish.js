@@ -13,6 +13,7 @@ function renderWorkoutCombination(){
  return `<details class="combination-panel"><summary><span>${uiIcon('dumbbell')}<b>Combinación sugerida</b></span><span class="combination-status">${active?'Ya seleccionada':'Ver propuesta'} ›</span></summary><div class="combination-body"><p>${esc(combo.reason)}</p><ol>${combo.names.map(n=>'<li>'+esc(n)+'</li>').join('')}</ol><p class="hint">Los días A y B varían ángulos y agarres. Mantén una selección estable varias semanas para comparar tu progreso; no necesitas cambiar todo cada día. Los ejercicios compuestos trabajan varios músculos.</p><p class="hint">Mantiene las series de tu plan. Las variantes cambian los movimientos de esas posiciones: tus marcas y cargas anteriores se conservan como referencia; revisa y ajusta la carga antes de entrenar.</p><button class="btn" data-action="applyCombination" ${active?'disabled':''}>${active?'Esta combinación está en tu rutina':'Usar esta combinación'}</button></div></details>`;
 }
 function applyWorkoutCombination(day){if(workoutClosure(S.week,day))return;
+ if(plan[day].ex.some((_,i)=>{const key=S.week+'-'+day+'-'+i;return S.done[key]||String(S.loads[key]??'').trim()||String(S.reps[key]??'').trim()})){alert('Esta sesión ya tiene registros. Conservamos los ejercicios para no atribuir tus cargas a otra variante. Elige la combinación al comenzar una semana sin registros.');return}
  const combo=workoutCombinations[day];if(!combo)return;
  S.substitutions??={};
  combo.names.forEach((name,i)=>{const original=plan[day].ex[i][0],key=S.week+'-'+day+'-'+i;if(name===original)delete S.substitutions[key];else if(exerciseGuide[original].variants.includes(name))S.substitutions[key]=name});
@@ -30,4 +31,10 @@ function updateCardioField(input){if(workoutClosure())return false;
  const updated={minutes:S.day===2||S.day===5||S.day===6?10:15,...record};
  if(input.hasAttribute('data-cardio-minutes')){const minutes=Number(input.value);if(!Number.isInteger(minutes)||minutes<1||minutes>180){input.setCustomValidity('Escribe entre 1 y 180 minutos.');input.reportValidity();return false}input.setCustomValidity('');updated.minutes=minutes}else updated.done=input.checked;
  S.cardio??={};S.cardio[key]={...old,kind,activities:{...(old.activities||{}),[kind]:updated}};return true;
+}
+
+function renderRoutineGuide(){
+ const rest=S.day===6,legs=S.day===2||S.day===5;
+ if(rest)return '<section class="card"><h3>Recuperar también es avanzar</h3><p>Descansa de las cargas. Si te apetece, camina suave y prioriza comer y dormir bien.</p></section>';
+ return `<section class="card"><p class="eyebrow">ENTRENA CON INTENCIÓN</p><h3>${legs?'Piernas: estabilidad, fuerza y control':'Un plan claro para tu sesión'}</h3><div class="grid"><div class="stat"><b>Calentamiento</b><p class="hint">5–8 min suaves y 1–3 series progresivas del primer ejercicio, sin agotarte.</p></div><div class="stat"><b>Descansos</b><p class="hint">2–3 min en presses, remos, sentadillas y bisagras. 60–120 s en ejercicios aislados.</p></div></div><p>Empieza con los movimientos grandes y termina con los accesorios. Usa el rango indicado y deja unas 2 repeticiones posibles con buena técnica.</p><p class="hint">A y B complementan ángulos y agarres. No necesitas tres ejercicios por músculo en cada sesión. Mantén una selección estable 4–6 semanas para comparar tus registros. Si no recuperas entre sesiones, añade descanso antes de continuar la secuencia.</p><p class="hint">Cuando alcances el tope del rango con control en dos sesiones comparables, valora el menor incremento disponible. Si hay dolor, detén el ejercicio.</p></section>`;
 }

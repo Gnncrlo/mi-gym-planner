@@ -92,3 +92,17 @@ Esta revisión necesita cuentas de prueba reales y dos dispositivos; las pruebas
 6. Comprueba el registro directo, el cierre de sesión y el inicio posterior desde el acceso directo del iPhone. Si más adelante se habilita la confirmación, prueba también su envío con el SMTP configurado.
 
 Las pruebas SQL y las simulaciones de la interfaz no dan por validado el registro y la sincronización reales. Las comprobaciones anteriores en dispositivos siguen pendientes y deben registrarse antes de considerar terminada esa validación.
+
+
+### Respaldos por usuario y recuperación sin reemplazar
+
+En Más → Respaldo y recuperación puedes guardar las últimas cinco copias del usuario activo en este navegador y descargar cada una. Este historial local no se sincroniza ni sustituye un archivo descargado. Antes de restaurar reemplazando datos o recuperar entradas, se guarda una copia automática; si no hay espacio, la operación se detiene.
+
+«Recuperar registros faltantes» admite un respaldo JSON y pide confirmar el origen y el destino. Conserva los valores actuales, incluso checks desmarcados; no mezcla carga, variante y repeticiones de un ejercicio que ya tiene datos. Conserva fechas de peso existentes y cierres de rutinas existentes. No modifica el nombre ni horarios del usuario. Recuperar no resuelve conflictos: las entradas coincidentes se omiten y el archivo original se conserva. En cuentas de nube, comprueba «Nube al día» después.
+
+En Rutinas, cada ejercicio abierto incluye «Tu siguiente paso», basado en sesiones cerradas del mismo ejercicio. No modifica cargas automáticamente ni interpreta una sola cifra de repeticiones como todas las series realizadas.
+
+
+### Recuperación de contraseña
+
+En Más → Iniciar sesión puedes mostrar la contraseña escrita o usar «Olvidé mi contraseña». La app solicita un enlace a Supabase y muestra un mensaje que no confirma si un correo está registrado. La entrega depende de la configuración de correo y sus límites; no se garantiza con una prueba simulada. El enlace abre un formulario para elegir y confirmar una contraseña nueva. Su token se elimina de la URL y solo vive en memoria, nunca en respaldos ni localStorage. Antes de cambiar la contraseña se verifica su usuario con Auth. Luego debes iniciar sesión con tu mismo correo; no se importan, borran ni reemplazan registros del dispositivo o de la nube. Los enlaces vencidos requieren solicitar otro.

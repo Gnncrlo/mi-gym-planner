@@ -77,3 +77,9 @@ function updateExerciseFeeling(index,value){
 function attachStrengthCoach(){
  document.addEventListener('change',event=>{const field=event.target.closest('[data-exercise-feeling]');if(field&&!field.disabled)updateExerciseFeeling(Number(field.dataset.exerciseFeeling),field.value)});
 }
+
+function renderWorkoutNextStep(name,index){
+ if(workoutClosure())return '';
+ const advice=strengthCoachAdvice(name),record=advice.sessions[0];
+ return `<details class="strength-coach"><summary><b>Tu siguiente paso</b> · ${esc(advice.title)}</summary><p>${esc(advice.message)}</p>${record?`<p class="hint">Último cierre: ${esc(record.date)} · ${record.load===null?'Sin carga':esc(record.load)+' kg'} · ${record.reps===null?'Sin reps':esc(record.reps)+' reps'}</p>`:''}<p class="hint">${advice.status==='maintain'?'Si aún no alcanzas el rango, intenta una repetición más manteniendo la técnica antes de subir peso. ':''}Registra tu sensación y cierra el día para mejorar la siguiente recomendación. No cambia tus pesos automáticamente.</p></details>`;
+}

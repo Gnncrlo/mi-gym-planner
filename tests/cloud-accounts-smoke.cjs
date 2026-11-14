@@ -2,7 +2,7 @@
 // Document, Auth and sync doubles avoid network, browser and real account data.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const read=file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8');
-const index=read('index.html'),source=read('cloud-accounts.js');
+const index=read('index.html'),source=read('cloud-accounts.js')+'\n'+read('planner-recovery.js')+'\n'+read('cloud-password.js')+'\n'+read('section-banners.js');
 const defaultsExpression=index.match(/const defaults=([\s\S]*?);let S/);
 assert.ok(defaultsExpression,'Found the actual application defaults');
 const actualDefaults=vm.runInNewContext('('+defaultsExpression[1]+')');
@@ -29,7 +29,7 @@ function fixture({configured=true,values={},defaults=actualDefaults}={}){
  const calls={renders:0,welcomes:[],reloads:0,confirms:[],downloads:[],history:[],authCreated:0,controllers:[],sequence:[]};
  const auth={resume:async()=>ana,currentUser:()=>ana,getToken:async()=>{calls.sequence.push('token');return 'PRIVATE_ACCESS_TOKEN'},signIn:async()=>ana,signUp:async()=>({requiresConfirmation:true}),signOut:async()=>{}};
  const document={hidden:false,querySelector:selector=>nodes.get(selector)||null,querySelectorAll:()=>[],addEventListener(type,handler,capture=false){if(!handlers.has(type))handlers.set(type,[]);handlers.get(type).push({handler,capture})}};
- const context=vm.createContext({URL,URLSearchParams,AbortController,setTimeout,clearTimeout,atob,Date,fetch:()=>{throw Error('Network is forbidden in this test')},document,localStorage:storage,defaults:copy(defaults),S:copy(legacy),foodDraft:{text:'',type:1},foodDrafts:new Map(),foodDraftDate:'',foodNotice:null,esc:escaped,uiIcon:()=>'<svg></svg>',GYM_CLOUD_CONFIG:configured?{url:'https://gym-project.supabase.co',publishableKey:'sb_publishable_public_test_key'}:{url:'',publishableKey:''},
+ const context=vm.createContext({crypto:require('node:crypto').webcrypto,URL,URLSearchParams,AbortController,setTimeout,clearTimeout,atob,Date,fetch:()=>{throw Error('Network is forbidden in this test')},document,localStorage:storage,defaults:copy(defaults),S:copy(legacy),foodDraft:{text:'',type:1},foodDrafts:new Map(),foodDraftDate:'',foodNotice:null,esc:escaped,uiIcon:()=>'<svg></svg>',GYM_CLOUD_CONFIG:configured?{url:'https://gym-project.supabase.co',publishableKey:'sb_publishable_public_test_key'}:{url:'',publishableKey:''},
   window:{sessionStorage:new Storage(),location:{protocol:'https:',origin:'https://gnncrlo.github.io',pathname:'/mi-gym-planner/',search:'',hash:'',reload(){calls.reloads++}},history:{replaceState(...args){calls.history.push(args)}},addEventListener(type,handler){if(!windowHandlers.has(type))windowHandlers.set(type,[]);windowHandlers.get(type).push(handler)}},
   navigator:{},confirm:message=>{calls.sequence.push('confirm');calls.confirms.push(message);return true},render:()=>{calls.renders++},attachWelcome:()=>{calls.welcomes.push({ready:run('cloudReady'),state:copy(run('S'))})},
   createGymCloudAuth:()=>{calls.authCreated++;return auth},
@@ -83,7 +83,7 @@ function inputTarget(dataset={}){return {id:'cloudEmail',dataset,value:'ana@exam
   const limited=fixture();if(cloud)limited.activate();
   limited.context.foodDraft.text='Do not lose my draft';limited.context.foodDrafts.set('date:0',{text:'Another draft'});
   const original=limited.context.S,before=limited.storage.snapshot();limited.storage.fail=cloud?cache(ids[0]):'mgp-v2';
-  await limited.context.restorePlannerAccount(file({...legacy,loads:{...legacy.loads,newLoad:'65'}}));assert.equal(limited.context.S,original);assert.deepEqual(limited.storage.snapshot(),before);assert.equal(limited.context.foodDraft.text,'Do not lose my draft');assert.equal(limited.context.foodDrafts.size,1);assert.match(limited.run('cloudError'),/QuotaExceeded|No se pudo guardar/);
+  await limited.context.restorePlannerAccount(file({...legacy,loads:{...legacy.loads,newLoad:'65'}}));assert.equal(limited.context.S,original);const after=limited.storage.snapshot();const checkpointKey=Object.keys(after).find(key=>key.startsWith('mgp-checkpoints-v1:'));assert.ok(checkpointKey,'A recovery checkpoint is kept even when the destination write fails');assert.deepEqual(JSON.parse(after[checkpointKey])[0].state,JSON.parse(JSON.stringify(original)));delete after[checkpointKey];assert.deepEqual(after,before);assert.equal(limited.context.foodDraft.text,'Do not lose my draft');assert.equal(limited.context.foodDrafts.size,1);assert.match(limited.run('cloudError'),/QuotaExceeded|No se pudo guardar/);
  }
  const restored=fixture();restored.activate();const original=restored.context.S,oldLegacy=restored.storage.getItem('mgp-v2'),otherBefore=restored.storage.getItem(cache(ids[1]));
  const save=restored.controller.save;restored.controller.save=value=>{assert.equal(restored.context.S,original,'Persist the candidate before replacing the rendered state');assert.equal(value.profileName,'Ana');save(value)};

@@ -162,3 +162,33 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;ba
 .device-profiles{border-color:#355d85;background:radial-gradient(ellipse at top right,#285a8540,transparent 65%),linear-gradient(135deg,#142b44,#101e31);min-width:0}.device-profile-list{display:grid;gap:10px}.device-profile-choice{display:flex;align-items:center;gap:12px;width:100%;min-height:72px;padding:13px;text-align:left;color:#dcecff;background:#101f33;border:1px solid #314d6c;border-radius:16px;font:inherit}.device-profile-choice[aria-current=true]{border-color:#69aaff;background:#193d66}.device-profile-choice:disabled{opacity:.65}.device-profile-choice>span:nth-child(2){flex:1;min-width:0}.device-profile-choice b{display:block;font-size:14px;line-height:1.6;overflow-wrap:anywhere}.device-profile-choice small{display:block;font-size:11px;line-height:1.6;color:#a7c1dd}.device-profile-avatar{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#357de3,#163d75);border:1px solid #578bbf;font-weight:700}.device-profile-choice:focus-visible{outline:2px solid #b0dcff;outline-offset:3px}.device-profiles .profile-create-form .label{margin:0}.device-profiles .food-error:empty{display:none}
 /* Account status stays compact while the settings screen explains pending uploads. */
 .head{gap:8px}.head .brand{min-width:0;flex:1}.head>.profile-active-tag{font-size:9px;max-width:82px;line-height:1.45;padding:6px 7px}.profile-help{font-size:11px;line-height:1.8;color:#9ebbd8;overflow-wrap:anywhere}.cloud-auth-actions{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}.cloud-auth-actions>.btn{flex:1;min-width:110px;min-height:46px;font-size:12px}.profile-create-form>h3{margin:0;font-size:18px}.profile-import-legacy{border-top:1px solid #31506e;margin-top:22px;padding-top:16px}.profile-import-legacy h4{font-size:14px;line-height:1.6;margin:0;color:#cbe0f5}.profile-manager .btn{max-width:100%;white-space:normal;line-height:1.6;overflow-wrap:anywhere}.profile-manager [data-cloud-status]{font-size:12px;color:#a5d0f2;line-height:1.8}.profile-manager [data-cloud-conflict-ui][hidden]{display:none}.profile-manager .food-error:empty{display:none}@media(max-width:360px){.head .brand b{font-size:13px}.head .brand-caption{font-size:6px}.head>.profile-active-tag{max-width:62px;font-size:8px;padding:5px}.head>.avatar{width:36px;height:36px;min-width:36px}.cloud-auth-actions>.btn{min-width:95px;font-size:11px}}
+
+.strength-table-scroll{overflow-x:auto;border:1px solid #294057;border-radius:14px;margin:16px 0;max-width:100%;-webkit-overflow-scrolling:touch}.strength-table{border-collapse:collapse;min-width:640px;width:100%;font-size:13px;text-align:left}.strength-table caption{text-align:left;padding:12px;color:#b4c8dc}.strength-table th,.strength-table td{padding:12px;border-bottom:1px solid #294057;vertical-align:top}.strength-table thead{background:#153454;color:#9bd0ff}.strength-table tbody th{min-width:170px}.strength-table small{display:block;color:#9baec3;font-weight:400;margin-top:5px}.strength-table tr:last-child>*{border-bottom:0}.strength-table-scroll:focus-visible{outline:2px solid #58a7ff;outline-offset:3px}
+
+/* Uploaded screen references: dark navy, lime accents and compact motivational banners. */
+:root{--accent:#c4f535;--accent-ink:#142006;--blue:var(--accent)}
+body{background:radial-gradient(ellipse at 0 0,#142537 0,transparent 42%),var(--bg)}
+.blue,.welcome-dot,.text-link,.subtle-tag,.stat-icon{color:var(--accent)}
+.brand-mark{background:linear-gradient(145deg,#d8ff69,#a8d91d);color:var(--accent-ink);box-shadow:0 5px 20px #a9de1926}
+.avatar{border-color:#6b8435;color:var(--accent);background:#192a27}
+.btn:not(.secondary){background:linear-gradient(135deg,#d2ff58,#b8ed26);color:var(--accent-ink);box-shadow:0 4px 18px #aee92c22}
+.btn:focus-visible,.text-link:focus-visible,.field:focus-visible{outline-color:var(--accent)}
+.days button.active,.tabline button.active{background:var(--accent);border-color:#d6ff70;color:var(--accent-ink);box-shadow:0 4px 14px #c4f53519}
+.nav button.active{color:var(--accent);background:#26321d}.nav button.active svg{color:var(--accent)}
+.item input[type=checkbox],input[type=checkbox]{accent-color:var(--accent)}
+.progress div{background:linear-gradient(90deg,#9ed427,#d6ff60)}
+.hero{border-color:#45562c;background:#142231}.hero .pill{color:var(--accent);border-color:#657f35;background:#26351fd9}
+.hero::after{background:linear-gradient(90deg,rgba(10,19,30,.98),rgba(10,19,30,.91) 40%,rgba(10,19,30,.3))}
+.hero-photo{filter:saturate(.85)}
+.daily-icon{color:var(--accent);background:#293722}.exercise-is-done{border-color:#789829}
+.section-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;isolation:isolate;position:relative;overflow:hidden;padding:21px;border:1px solid #485c2d;border-radius:22px;background:linear-gradient(120deg,#1d312b,#101c2d 72%);margin:0 0 22px}
+.section-banner::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 100% 0,#b9ed2525,transparent 60%);pointer-events:none}
+.section-banner-kicker{font-size:9px;font-weight:800;letter-spacing:1.5px;color:var(--accent)}
+.section-banner-title{font-size:22px;line-height:1.2;letter-spacing:-.6px;font-weight:800;margin:10px 0}
+.section-banner-description{font-size:12px;line-height:1.6;color:#b7c6d9;margin:0;max-width:38ch}
+.section-banner-symbol{display:grid;place-items:center;flex-shrink:0;width:60px;height:64px;border-radius:18px;transform:rotate(-8deg);background:linear-gradient(145deg,#d9ff69,#a8d821);color:var(--accent-ink);box-shadow:0 10px 30px #b5ec241c}
+.section-banner-symbol svg{width:31px;height:31px}
+.splash-enter{background:linear-gradient(135deg,#d4ff61,#b9ec28);color:var(--accent-ink);border-color:#d9ff7b;box-shadow:0 8px 30px #bae93025}
+.splash-motivation{border-left-color:var(--accent)}.splash-motivation-label{color:var(--accent)}
+@media(max-width:360px){.section-banner{padding:17px;gap:12px}.section-banner-title{font-size:20px}.section-banner-symbol{width:48px;height:54px}.section-banner-kicker{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.section-banner-symbol{transform:none}}

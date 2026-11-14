@@ -104,6 +104,15 @@ function createGymCloudClient(options={}){
    return {user:user(isObject(value)&&value.user!==undefined?value.user:value)};
   },
   async signIn(email,password){return session(await request('/auth/v1/token?grant_type=password',{method:'POST',body:credentials(email,password),operation:'signIn'}))},
+  async requestPasswordReset(email){
+   const login=credentials(email,'validation-only');
+   const query=redirect?'?'+new URLSearchParams({redirect_to:redirect.href}).toString():'';
+   await request('/auth/v1/recover'+query,{method:'POST',body:{email:login.email},operation:'recover',noBody:true});
+  },
+  async updatePassword(accessToken,password){
+   if(typeof password!=='string'||password.length<8||password.length>4096)throw fail('INPUT','Usa una contraseña de al menos 8 caracteres.');
+   return user(await request('/auth/v1/user',{method:'PUT',accessToken:token(accessToken),body:{password},operation:'password'}));
+  },
   async refresh(refreshToken){return session(await request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:token(refreshToken)},operation:'refresh'}))},
   async getUser(accessToken){return user(await request('/auth/v1/user',{accessToken:token(accessToken),operation:'user'}))},
   async signOut(accessToken){await request('/auth/v1/logout?scope=local',{method:'POST',accessToken:token(accessToken),operation:'signOut',noBody:true})},
