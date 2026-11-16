@@ -39,7 +39,7 @@ const clone=value=>JSON.parse(JSON.stringify(value));
    throw Error('Unexpected fixture request: '+method+' '+url.pathname);
   });
   const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(process.env.APP_URL||'http://127.0.0.1:8000/');await welcome(page,'Mi perfil');
+  await page.goto(process.env.APP_URL||'http://127.0.0.1:8000/');await welcome(page,'¡Qué bueno verte!');
   return page;
  }
  async function welcome(page,name){const splash=page.locator('.welcome-splash');await splash.waitFor();assert.ok((await splash.innerText()).includes(name));await splash.getByRole('button').click();await splash.waitFor({state:'hidden'})}

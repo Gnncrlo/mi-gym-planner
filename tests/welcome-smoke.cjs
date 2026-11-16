@@ -15,7 +15,7 @@ const assert=require('node:assert/strict');
   });
   await page.goto(process.env.APP_URL||'http://127.0.0.1:8000/');
   await page.locator('.welcome-splash').waitFor({state:'detached'});
-  assert.match((await page.evaluate(()=>window.seenWelcomes))[0],/Mi perfil/);
+  assert.match((await page.evaluate(()=>window.seenWelcomes))[0],/¡Qué bueno verte!/);
   assert.match((await page.evaluate(()=>window.seenWelcomes))[0],/DISCIPLINA DEL DÍA/);
   assert.equal(await page.evaluate(()=>window.seenWelcomes[0].includes(disciplineQuote())),true);
   const quotes=await page.evaluate(()=>Array.from({length:7},(_,i)=>disciplineQuote('2026-10-'+String(13+i))));
@@ -43,7 +43,7 @@ const assert=require('node:assert/strict');
   await page.evaluate(()=>{S.profileName='<img src=x onerror="window.splashInjected=true">';showAppWelcome()});
   assert.equal(await page.locator('.splash-content').evaluate(element=>getComputedStyle(element).animationName),'none');
   assert.equal(await page.locator('.splash-content h2 img').count(),0);
-  assert.equal(await page.locator('.splash-content h2 span').textContent(),'<img src=x onerror="window.splashInjected=true">');
+  assert.equal(await page.locator('.splash-content h2 span').textContent(),'<img');
   await page.locator('.welcome-splash').waitFor({state:'detached'});
   assert.equal(await page.evaluate(()=>Boolean(window.splashInjected)),false);
 
