@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="bg" x1="90" y1="30" x2="430" y2="490" gradientUnits="userSpaceOnUse"><stop stop-color="#e9ffa6"/><stop offset=".5" stop-color="#c4f542"/><stop offset="1" stop-color="#7cc01c"/></linearGradient>
+<radialGradient id="hl" cx=".3" cy=".08" r=".8"><stop stop-color="#fff" stop-opacity=".55"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<linearGradient id="db" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0f2140"/><stop offset="1" stop-color="#070f1d"/></linearGradient>
+<filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="9" flood-color="#2a4a00" flood-opacity=".38"/></filter>
+</defs>
+<rect width="512" height="512" rx="116" fill="url(#bg)"/><rect width="512" height="512" rx="116" fill="url(#hl)"/>
+<g transform="rotate(-38 256 262)" filter="url(#sh)" fill="url(#db)">
+<rect x="118" y="244" width="276" height="36" rx="18"/>
+<rect x="150" y="172" width="50" height="180" rx="16"/><rect x="312" y="172" width="50" height="180" rx="16"/>
+<rect x="104" y="204" width="38" height="116" rx="13"/><rect x="370" y="204" width="38" height="116" rx="13"/>
+</g>
+<g fill="#0b1604" opacity=".92"><path d="M404 92c4 22 14 32 36 36-22 4-32 14-36 36-4-22-14-32-36-36 22-4 32-14 36-36Z"/></g>
+<g fill="#0b1604" opacity=".5"><path d="M118 360c2 11 7 16 18 18-11 2-16 7-18 18-2-11-7-16-18-18 11-2 16-7 18-18Z"/></g>
+</svg>
