@@ -1,0 +1,17 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const values=new Map();let identity='owner',fail=false;
+const context=vm.createContext({crypto:require('node:crypto').webcrypto,Date,cloudPageBlocked:()=>false,cloudMode:false,deviceProfileIdentity:()=>identity,S:{profileName:'Giancarlo',done:{'1-0-0':false},loads:{'1-0-0':40},body:[{date:'2026-10-01',kg:80}],dayHistory:[],closedDays:{}},localStorage:{getItem:key=>values.get(key)||null,setItem:(key,value)=>{if(fail)throw Error('Quota');values.set(key,value)}}});
+vm.runInContext(fs.readFileSync('planner-recovery.js','utf8'),context);
+const current=JSON.parse(JSON.stringify(context.S)),incoming={profileName:'Otro',done:{'1-0-0':true,'2-0-0':true},loads:{'1-0-0':55,'2-0-0':45},reps:{'1-0-0':12,'2-0-0':10},body:[{date:'2026-10-01',kg:90},{date:'2026-10-02',kg:79}],dayHistory:[],closedDays:{}};
+context.incoming=incoming;
+const merged=context.mergeMissingPlannerRecords(context.S,incoming);
+assert.equal(merged.state.done['1-0-0'],false);assert.equal(merged.state.loads['1-0-0'],40);assert.equal(merged.state.reps['1-0-0'],undefined);assert.equal(merged.state.loads['2-0-0'],45);assert.equal(merged.state.reps['2-0-0'],10);assert.equal(merged.state.profileName,'Giancarlo');assert.equal(merged.state.body.length,2);assert.equal(merged.state.body[0].kg,80);assert.deepEqual(JSON.parse(JSON.stringify(context.S)),current);
+assert.equal(context.mergeMissingPlannerRecords(merged.state,incoming).added,0);
+for(let i=0;i<7;i++)context.savePlannerCheckpoint();assert.equal(context.plannerCheckpoints().length,5);
+identity='ana';assert.equal(context.plannerCheckpoints().length,0);context.savePlannerCheckpoint();identity='owner';assert.equal(context.plannerCheckpoints().length,5);
+const before=JSON.stringify([...values]);fail=true;assert.throws(()=>context.savePlannerCheckpoint(),/Quota/);assert.equal(JSON.stringify([...values]),before);fail=false;
+const closed={...current,dayHistory:[{id:'old',date:'2026-10-01',week:1,day:0}],closedDays:{'2026-10-01':'old'}};
+const recovered=context.mergeMissingPlannerRecords(closed,{dayHistory:[{id:'new',date:'2026-10-02',week:1,day:0}],closedDays:{'2026-10-02':'new'},loads:{'1-0-1':99}}).state;
+assert.equal(recovered.dayHistory.length,1);assert.equal(recovered.loads['1-0-1'],undefined);assert.equal(recovered.closedDays['2026-10-02'],undefined);
+const polluted=context.mergeMissingPlannerRecords(current,JSON.parse('{"loads":{"__proto__":{"polluted":true}}}'));assert.equal(Object.hasOwn(polluted.state.loads,'__proto__'),false);
+console.log('PASS: recovery preserves existing records, workout identity, closed days and user isolation; repeat import, five snapshots, quota and prototype protection.');

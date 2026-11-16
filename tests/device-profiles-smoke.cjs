@@ -23,7 +23,7 @@ function fixture({storage=new Storage({'mgp-v2':ownerRaw,'mgp-cloud-v1:other:pri
   document:{querySelectorAll:selector=>selector==='[data-cloud-save-notice]'?[notice]:[],querySelector:()=>null,addEventListener(type,handler,capture=false){if(!handlers.has(type))handlers.set(type,[]);handlers.get(type).push({handler,capture})}},
   window:{sessionStorage:session,location:{hash:'',pathname:'/mi-gym-planner/',search:'',reload(){calls.reloads++}},history:{replaceState(){}},addEventListener(type,handler){windowHandlers.set(type,handler)}},
   esc,uiIcon:()=>'<svg></svg>',navigator:{},GYM_CLOUD_CONFIG:{url:'',publishableKey:''},render(){calls.renders++},confirm(message){calls.confirms.push(message);return true}});
- for(const file of ['device-profiles.js','cloud-accounts.js'])vm.runInContext(read(file),context,{filename:file});
+ for(const file of ['device-profiles.js','cloud-accounts.js','planner-recovery.js','cloud-password.js'])vm.runInContext(read(file),context,{filename:file});
  const run=code=>vm.runInContext(code,context);
  run('downloadPlannerJSON=(value,name)=>captureExport(value,name)');context.captureExport=(value,name)=>calls.exports.push({value:copy(value),name});
  if(boot)run('S=loadDevicePlannerState()');

@@ -14,7 +14,7 @@ function trendChart(points,unit,label){
 function strengthRecords(state=S){
  const records=[];
  const captured=new Set(dailyHistory(state).flatMap(s=>(s.exercises||[]).map(e=>s.week+'-'+s.day+'-'+e.slot)));
- for(const snapshot of dailyHistory(state))for(const e of snapshot.exercises||[])if(e.done&&optionalNumber(e.load)>0)records.push({name:e.name,date:snapshot.date,load:Number(e.load),reps:optionalNumber(e.reps),source:'cierre',week:snapshot.week});
+ for(const snapshot of dailyHistory(state))for(const e of snapshot.exercises||[])if(e.done&&optionalNumber(e.load)>0)records.push({name:e.name,date:snapshot.date,load:Number(e.load),reps:optionalNumber(e.reps),source:'cierre',week:snapshot.week,equipment:String(e.equipment||'')});
  for(const [key,value] of Object.entries(state.loads||{})){
   if(captured.has(key))continue;
   const m=key.match(/^(\d+)-([0-6])-(\d+)$/);if(!m||!state.done?.[key]||!(optionalNumber(value)>0))continue;
@@ -33,7 +33,7 @@ function renderStrengthStatistics(){
  const records=strengthRecords(),names=[...new Set(records.map(r=>r.name))].sort((a,b)=>a.localeCompare(b,'es'));
  if(!names.includes(strengthExercise))strengthExercise=names[0]||'';
  const selected=records.filter(r=>r.name===strengthExercise),dated=selected.filter(r=>r.date).sort((a,b)=>a.date.localeCompare(b.date)),best=selected.length?Math.max(...selected.map(r=>r.load)):null;
- return `<h3>Tu fuerza, ejercicio por ejercicio</h3><p class="hint">Compara cargas y repeticiones del mismo ejercicio y equipo. No se suman cargas de movimientos diferentes.</p>${names.length?`<label class="label" for="strengthExercise">Ejercicio</label><select id="strengthExercise" class="field" data-strength-exercise>${names.map(n=>`<option ${n===strengthExercise?'selected':''}>${esc(n)}</option>`).join('')}</select>${renderStrengthCoach(strengthExercise)}<div class="stats-best"><span>Mejor carga registrada</span><strong>${best}<small> kg</small></strong></div>${trendChart(dated.map(r=>({date:r.date,value:r.load})),'kg','Cargas de '+strengthExercise+' en días cerrados')}<p class="hint">La gráfica usa fechas de cierres. Los registros antiguos conservan su semana y no reciben fechas inventadas. El valor de repeticiones es el que anotaste; no estima máximos ni volumen total.</p><div class="strength-records">${selected.map(r=>`<div><span>${r.date||'Semana '+r.week+' · sin fecha de cierre'}</span><b>${r.load} kg · ${r.reps===null?'—':r.reps} reps</b></div>`).join('')}</div>`:'<p class="stats-empty">Marca un ejercicio como completado y registra su carga para empezar. Al cerrar días, guardarás también su evolución por fecha.</p>'}`;
+ return `${renderStrengthOverview()}<h3>Tu fuerza, ejercicio por ejercicio</h3><p class="hint">Compara cargas y repeticiones del mismo ejercicio y equipo. No se suman cargas de movimientos diferentes.</p>${names.length?`<label class="label" for="strengthExercise">Ejercicio</label><select id="strengthExercise" class="field" data-strength-exercise>${names.map(n=>`<option ${n===strengthExercise?'selected':''}>${esc(n)}</option>`).join('')}</select>${renderStrengthCoach(strengthExercise)}<div class="stats-best"><span>Mejor carga registrada</span><strong>${best}<small> kg</small></strong></div>${trendChart(dated.map(r=>({date:r.date,value:r.load})),'kg','Cargas de '+strengthExercise+' en días cerrados')}<p class="hint">La gráfica usa fechas de cierres. Los registros antiguos conservan su semana y no reciben fechas inventadas. El valor de repeticiones es el que anotaste; no estima máximos ni volumen total.</p><div class="strength-records">${selected.map(r=>`<div><span>${r.date||'Semana '+r.week+' · sin fecha de cierre'}</span><b>${r.load} kg · ${r.reps===null?'—':r.reps} reps</b></div>`).join('')}</div>`:'<p class="stats-empty">Marca un ejercicio como completado y registra su carga para empezar. Al cerrar días, guardarás también su evolución por fecha.</p>'}`;
 }
 function renderDayHistory(){
  const history=dailyHistory();
@@ -44,4 +44,25 @@ function renderProgressDashboard(){
  const tabs=[['peso','Peso'],['fuerza','Fuerza'],['historial','Días'],['resumen','Resumen'],['habitos','Agua']];
  let content=progressTab==='fuerza'?renderStrengthStatistics():progressTab==='historial'?renderDayHistory():progressTab==='peso'?renderWeightStatistics():['resumen','entrenos'].includes(progressTab)?renderWeeklyReview():'<h3>Agua últimos 7 registros</h3><div class="barrow">'+Object.entries(S.water).slice(-7).map(([k,v])=>'<div title="'+esc(k)+'" style="height:'+Math.max(4,Math.min(100,v/25))+'%"></div>').join('')+'</div>';
  return `<h2>Mi progreso</h2><p class="section-subtitle">Tu constancia, registrada día a día.</p><div class="grid"><div class="stat"><span class="muted small">Último peso registrado</span><strong>${latest?esc(latest.value)+' kg':'—'}</strong><span class="stat-note">${latest?esc(latest.date):'Registra tu primera medición'}</span></div><div class="stat"><span class="muted small">Días cerrados</span><strong>${Object.keys(S.closedDays||{}).filter(d=>closedDay(d)).length}</strong><span class="stat-note">Con un resumen guardado</span></div></div><div class="card"><h3>Registrar peso</h3><div class="row"><input id="newWeight" aria-label="Peso en kg" type="number" class="field" step="0.1" min="20" placeholder="Peso (kg)"><button class="btn" data-action="addWeight">Guardar</button></div></div><div class="card"><div class="tabline stats-tabs">${tabs.map(([id,label])=>`<button class="${progressTab===id?'active':''}" data-progress="${id}">${label}</button>`).join('')}</div>${content}</div>`;
+}
+
+function strengthOverviewRows(state=S){
+ const groups=new Map();
+ for(const record of strengthRecords(state)){
+  const key=record.name+'\u0000'+(record.equipment||'');
+  if(!groups.has(key))groups.set(key,[]);groups.get(key).push(record);
+ }
+ return [...groups.values()].map(records=>{
+  // Dated sessions and legacy week-only records are not placed on one invented timeline.
+  const dated=records.filter(r=>r.date).sort((a,b)=>a.date.localeCompare(b.date));
+  const timeline=dated.length?dated:records.slice().sort((a,b)=>a.week-b.week);
+  const latest=timeline.at(-1),previous=timeline.at(-2);
+  const change=previous&&latest.reps!==null&&latest.reps===previous.reps?Number((latest.load-previous.load).toFixed(2)):null;
+  return {name:latest.name,equipment:latest.equipment||'',latest,previous,best:Math.max(...records.map(r=>r.load)),count:records.length,change};
+ }).sort((a,b)=>a.name.localeCompare(b.name,'es'));
+}
+function renderStrengthOverview(state=S){
+ const rows=strengthOverviewRows(state);
+ const value=record=>record?`${esc(record.load)} kg · ${record.reps===null?'—':esc(record.reps)} reps`:'—';
+ return `<section class="strength-overview"><h3>Tabla general de fuerza</h3><p class="hint">Ejercicios completados con carga registrada. El cambio compara los dos últimos registros con las mismas repeticiones; no estima tu fuerza máxima. Equipos diferentes se muestran separados cuando quedaron registrados.</p>${rows.length?`<div class="strength-table-scroll" role="region" aria-label="Tabla de progreso de fuerza, desliza horizontalmente" tabindex="0"><table class="strength-table"><caption>Carga y repeticiones por ejercicio</caption><thead><tr><th scope="col">Ejercicio</th><th scope="col">Anterior</th><th scope="col">Último</th><th scope="col">Mejor carga</th><th scope="col">Cambio</th></tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${esc(row.name)}<small>${esc(row.equipment||'Equipo sin especificar')} · ${row.count} registros</small></th><td>${value(row.previous)}</td><td>${value(row.latest)}<small>${esc(row.latest.date||'Semana '+row.latest.week+' · sin fecha')}</small></td><td>${esc(row.best)} kg</td><td>${row.change===null?'Sin comparación':(row.change>0?'+':'')+esc(row.change)+' kg'}</td></tr>`).join('')}</tbody></table></div><p class="hint">Desliza la tabla para ver todas las columnas. Una carga mayor no siempre significa más fuerza: compara técnica, recorrido y equipo. Si hay cierres con fecha, la comparación usa esos cierres; los datos antiguos siguen contando para la mejor carga.</p>`:'<p class="stats-empty">Completa un ejercicio y anota sus kg para empezar tu tabla. Cierra el día para guardar la fecha de cada sesión.</p>'}</section>`;
 }
