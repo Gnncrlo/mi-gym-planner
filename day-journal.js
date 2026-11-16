@@ -60,7 +60,7 @@ function workoutClosure(week=S.week,day=S.day,state=S){
 function workoutMarked(index,day=S.day,state=S){const snapshot=workoutClosure(state.week,day,state);return snapshot?!!snapshot.exercises.find(e=>e.slot===index)?.done:!!state.done?.[state.week+'-'+day+'-'+index]}
 function closedMutation(element){
  const workout=workoutClosure(),date=closedDay(selectedDate);
- if(workout&&(element.matches('[data-ex],[data-load],[data-reps],[data-exercise-feeling],[data-cardio-minutes],[data-cardio-done],[data-variant],[data-original]')||element.dataset.action==='applyCombination'))return true;
+ if(workout&&(element.matches('[data-quick-load],[data-ex],[data-load],[data-reps],[data-exercise-feeling],[data-cardio-minutes],[data-cardio-done],[data-variant],[data-original]')||element.dataset.action==='applyCombination'))return true;
  if(date&&(element.matches('[data-task],[data-meal],[data-sleep],[data-food-detail],[data-gym-period],[data-gym-clear],[data-breakfast-status]')||element.dataset.delete||['water','waterMinus','addTask'].includes(element.dataset.action)))return true;
  if(closedDay(localDateKey())&&(element.id==='newWeight'||element.dataset.action==='addWeight'))return true;
  return false;
@@ -68,7 +68,7 @@ function closedMutation(element){
 function applyClosedControls(){
  const workout=workoutClosure(),date=closedDay(selectedDate);
  if(S.tab==='rutina'&&workout){
-  document.querySelectorAll('[data-ex],[data-load],[data-reps],[data-exercise-feeling],[data-cardio-minutes],[data-cardio-done],[data-action="applyCombination"]').forEach(e=>{e.disabled=true});
+  document.querySelectorAll('[data-quick-load],[data-ex],[data-load],[data-reps],[data-exercise-feeling],[data-cardio-minutes],[data-cardio-done],[data-action="applyCombination"]').forEach(e=>{e.disabled=true});
   for(const exercise of workout.exercises){const check=document.querySelector(`[data-ex="${exercise.slot}"]`),load=document.querySelector(`[data-load="${exercise.slot}"]`),reps=document.querySelector(`[data-reps="${exercise.slot}"]`);if(check)check.checked=exercise.done;if(load)load.value=exercise.load??'';if(reps)reps.value=exercise.reps??''}
  }
  if(date){document.querySelectorAll('[data-gym-period],[data-gym-clear],[data-breakfast-status],[data-task],[data-meal],[data-sleep],[data-action="water"],[data-action="waterMinus"],[data-action="addTask"],#taskName,#taskTime,[data-delete],[data-food-detail],#foodForm textarea,#foodForm button').forEach(e=>{e.disabled=true});for(const t of date.tasks){const checkbox=document.querySelector(`[data-task="${CSS.escape(t.id)}"]`);if(checkbox)checkbox.checked=t.done}document.querySelectorAll('[data-meal]:not([data-task])').forEach(e=>{e.checked=!!date.meals[e.dataset.meal]})}

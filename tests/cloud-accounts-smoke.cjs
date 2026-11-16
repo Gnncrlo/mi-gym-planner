@@ -2,7 +2,7 @@
 // Document, Auth and sync doubles avoid network, browser and real account data.
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const read=file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8');
-const index=read('index.html'),source=read('cloud-accounts.js')+'\n'+read('planner-recovery.js')+'\n'+read('cloud-password.js')+'\n'+read('section-banners.js');
+const index=read('index.html'),source=read('cloud-accounts.js')+'\n'+read('planner-recovery.js')+'\n'+read('cloud-password.js')+'\n'+read('section-banners.js')+'\n'+read('gym-enhancements.js');
 const defaultsExpression=index.match(/const defaults=([\s\S]*?);let S/);
 assert.ok(defaultsExpression,'Found the actual application defaults');
 const actualDefaults=vm.runInNewContext('('+defaultsExpression[1]+')');
@@ -28,8 +28,8 @@ function fixture({configured=true,values={},defaults=actualDefaults}={}){
  const handlers=new Map(),windowHandlers=new Map(),nodes=new Map(['#root','#nav','#profileAvatar'].map(id=>[id,{innerHTML:'',textContent:''}]));
  const calls={renders:0,welcomes:[],reloads:0,confirms:[],downloads:[],history:[],authCreated:0,controllers:[],sequence:[]};
  const auth={resume:async()=>ana,currentUser:()=>ana,getToken:async()=>{calls.sequence.push('token');return 'PRIVATE_ACCESS_TOKEN'},signIn:async()=>ana,signUp:async()=>({requiresConfirmation:true}),signOut:async()=>{}};
- const document={hidden:false,querySelector:selector=>nodes.get(selector)||null,querySelectorAll:()=>[],addEventListener(type,handler,capture=false){if(!handlers.has(type))handlers.set(type,[]);handlers.get(type).push({handler,capture})}};
- const context=vm.createContext({crypto:require('node:crypto').webcrypto,URL,URLSearchParams,AbortController,setTimeout,clearTimeout,atob,Date,fetch:()=>{throw Error('Network is forbidden in this test')},document,localStorage:storage,defaults:copy(defaults),S:copy(legacy),foodDraft:{text:'',type:1},foodDrafts:new Map(),foodDraftDate:'',foodNotice:null,esc:escaped,uiIcon:()=>'<svg></svg>',GYM_CLOUD_CONFIG:configured?{url:'https://gym-project.supabase.co',publishableKey:'sb_publishable_public_test_key'}:{url:'',publishableKey:''},
+ const document={body:{classList:{remove(){}}},hidden:false,querySelector:selector=>nodes.get(selector)||null,querySelectorAll:()=>[],addEventListener(type,handler,capture=false){if(!handlers.has(type))handlers.set(type,[]);handlers.get(type).push({handler,capture})}};
+ const context=vm.createContext({crypto:require('node:crypto').webcrypto,URL,URLSearchParams,AbortController,setTimeout,clearTimeout,setInterval,clearInterval,cancelAnimationFrame(){},timer:null,playing:false,seconds:90,atob,Date,fetch:()=>{throw Error('Network is forbidden in this test')},document,localStorage:storage,defaults:copy(defaults),S:copy(legacy),foodDraft:{text:'',type:1},foodDrafts:new Map(),foodDraftDate:'',foodNotice:null,esc:escaped,uiIcon:()=>'<svg></svg>',GYM_CLOUD_CONFIG:configured?{url:'https://gym-project.supabase.co',publishableKey:'sb_publishable_public_test_key'}:{url:'',publishableKey:''},
   window:{sessionStorage:new Storage(),location:{protocol:'https:',origin:'https://gnncrlo.github.io',pathname:'/mi-gym-planner/',search:'',hash:'',reload(){calls.reloads++}},history:{replaceState(...args){calls.history.push(args)}},addEventListener(type,handler){if(!windowHandlers.has(type))windowHandlers.set(type,[]);windowHandlers.get(type).push(handler)}},
   navigator:{},confirm:message=>{calls.sequence.push('confirm');calls.confirms.push(message);return true},render:()=>{calls.renders++},attachWelcome:()=>{calls.welcomes.push({ready:run('cloudReady'),state:copy(run('S'))})},
   createGymCloudAuth:()=>{calls.authCreated++;return auth},
